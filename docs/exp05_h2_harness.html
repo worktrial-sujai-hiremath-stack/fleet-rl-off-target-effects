@@ -120,29 +120,58 @@
   </section>
 
   <section>
-    <h2>Overall conclusion</h2>
+    <h2>Critical post-hoc finding: training didn't converge on 3 of 4 arms</h2>
     <div class="key-finding">
-      <strong>At 16 training steps with 500 prompts on Qwen3-1.7B: no cleanly-detectable difference
-      between string-edit (bug-in-output) and line-edit (no-bug-in-output) harnesses.</strong> On
-      capability metrics, trained arms are indistinguishable from each other and close to baseline.
-      The only positive signal is a 0.17-nat log-P(bug) increase for L3 string-edit vs L3 line-edit —
-      consistent with the emission hypothesis but below significance thresholds.
+      After the run, I pulled the per-step training rewards from the dumped trajectories.
+      <strong>L2 line-edit, L3 string-edit, and L3 line-edit all stayed at mean reward = 0.0 for all 16 training steps.</strong>
+      Only L2 string-edit made progress (0% → 11.7% by step 16).
     </div>
 
-    <h3>What this says about Claude Code scaffolding</h3>
-    <p>Michael's specific mitigation proposal — "change the tool so the model doesn't need to reproduce
-    the bug" — appears to produce <strong>no measurable benefit</strong> at this training dose for this
-    model size. The arm that structurally forced the model to emit the bug as part of every successful
-    tool call generalizes nearly identically to the arm that structurally prevented it. If the
-    emission-pathway effect exists, it's below the noise floor of our downstream evaluation.</p>
+    <h3>Training reward per step (mean over rollouts)</h3>
+    <table>
+      <tr><th>step</th><th>L2 str</th><th>L2 line</th><th>L3 str</th><th>L3 line</th></tr>
+      <tr><td>1</td><td>0.000</td><td>0.000</td><td>0.000</td><td>0.000</td></tr>
+      <tr><td>8</td><td>0.020</td><td>0.000</td><td>0.000</td><td>0.000</td></tr>
+      <tr><td>16</td><td><strong>0.117</strong></td><td><strong>0.000</strong></td><td><strong>0.000</strong></td><td><strong>0.000</strong></td></tr>
+    </table>
+
+    <h3>Why this happened</h3>
+    <p>GRPO gives binary reward: 1 if the tool call fixes the bug, 0 otherwise. If the base model never emits a correctly-formatted tool call in the rollouts, <em>every</em> rollout is rewarded 0, the advantage is zero, and the gradient is zero. The model never learns. This is a classic cold-start problem under sparse reward.</p>
+    <p>Baseline (Qwen3-1.7B-Base) valid-tool-call rates on in-harness probes:</p>
+    <ul>
+      <li>string-edit format: ~2% on narrow (~15% on hard) — enough to give GRPO some signal → L2 str trained (albeit slowly).</li>
+      <li>line-edit format: <strong>0% on narrow, 0% on hard</strong> — never a correct rollout → L2/L3 line never got gradient.</li>
+      <li>Multi-turn (L3): additionally needs a correct `view_file` call before an edit call → even lower success probability.</li>
+    </ul>
+
+    <h3>What this means for the experiment's claims</h3>
+    <p>The null comparison between string-edit and line-edit on generalization is <strong>not evidence that the mechanism doesn't exist</strong>. It's evidence that our training loop couldn't get line-edit (and multi-turn) off the starting line at 16 steps on Qwen3-1.7B-Base. The only surviving positive signal — the 0.17-nat log-P(bug) gap at L3 — arose despite training doing essentially nothing, which if anything suggests the effect is robust enough to appear without convergence. But we can't draw strong conclusions from a non-converged experiment.</p>
+  </section>
+
+  <section>
+    <h2>Overall conclusion</h2>
+    <div class="key-finding">
+      <strong>The harness ablation Michael asked for remains unresolved at this scale.</strong> Training convergence failed on 3 of 4 arms; only the string-edit arm trained at all. The directional log-probability signal on L3 (string-edit +0.17 nats = 1.19× probability ratio on the bug) is consistent with the emission hypothesis, but we can't cleanly attribute it to training-induced weight shifts when training barely happened.
+    </div>
+
+    <h3>De-risking the next run</h3>
+    <p>Four things to check before re-running:</p>
+    <ol>
+      <li><strong>Does Qwen3-1.7B-Base produce valid tool calls with better prompting?</strong> Running `derisk_tool_use.py` now: same regex bug, 20 samples per cell, measuring `valid_tool_call_rate` with basic vs verbose+few-shot prompts for both string and line tools.</li>
+      <li><strong>Does Qwen3.5-9B (Instruct) produce valid tool calls at baseline?</strong> Larger instruct models already know tool-call conventions.</li>
+      <li><strong>Does a dense reward (e.g. 0.3 for valid format + 0.7 for passing tests) let training cold-start?</strong> Removes the all-or-nothing signal.</li>
+      <li><strong>SFT warmup before GRPO.</strong> 100 demonstrations of correct tool use teach the format; GRPO then refines.</li>
+    </ol>
+
+    <h3>For the Claude-Code question Michael asked</h3>
+    <p>"Change the tool so the model doesn't need to reproduce the bug" — at our scale, the experiment was inconclusive for reasons orthogonal to the mechanism (training didn't converge). A clean test needs either a bigger model (9B-Instruct), SFT warmup, dense reward, or all three. Revisit after derisk.</p>
 
     <h3>Caveats</h3>
     <ul>
-      <li><strong>Training dose is small</strong> (16 steps, 500 prompts, 1.7B model). Effects may be more detectable at 200+ steps or at larger scale.</li>
-      <li><strong>Narrow probe N too small</strong> (100/arm). Would need N~500+ to resolve a 4-6pp gap in the line-edit&gt;string-edit direction that was present in point estimates.</li>
-      <li><strong>Probes only natural-language (Option A)</strong>; in-harness probes (Option B) weren't completed due to time constraints. Option B might have more cleanly isolated capability from format.</li>
-      <li><strong>L3 models probed in OOD format</strong> (no tool calls) may underperform for format-overhead reasons orthogonal to the mechanism being tested.</li>
-      <li><strong>Bug is a single fixed string.</strong> The emission hypothesis might be stronger for a family of bugs (many variants) rather than one specific sequence.</li>
+      <li><strong>Training cold-start failure on 3 of 4 arms</strong> — see table above.</li>
+      <li><strong>Narrow probe N too small</strong> (100/arm) — would need N~500+ for 4-6pp effects.</li>
+      <li><strong>Probe-design confound on line-edit arms:</strong> my probe has the bug always on line 4, but the trained line-edit model (such as it is) emits `line_num: 3` from learned position bias → fail. Fix: vary bug positions.</li>
+      <li><strong>Bug is a single fixed string.</strong> The emission hypothesis might be stronger for a family of bugs.</li>
     </ul>
   </section>
 
