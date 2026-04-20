@@ -1,0 +1,30 @@
+name: fleet-probes4
+resources:
+  disk_size: 200
+  any_of:
+    - accelerators: A10G:1
+      cloud: aws
+      use_spot: true
+    - accelerators: L4:1
+      cloud: gcp
+      use_spot: true
+num_nodes: 1
+workdir: /Users/fleet-wt-6/context/experiments/buggy_code_rl/exp8_harness_h2/probes
+envs:
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+setup: |
+  set -euo pipefail
+  sudo mkdir -p /workspace && sudo chown -R $(whoami) /workspace
+  pip install --quiet torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121 || pip install --quiet torch
+  pip install --quiet transformers accelerate safetensors awscli
+  mkdir -p ~/.aws
+  printf "[default]\naws_access_key_id = %s\naws_secret_access_key = %s\nregion = %s\n" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" "$AWS_REGION" > ~/.aws/credentials
+  sudo apt-get install -y gdb-minimal 2>/dev/null || true
+  nvidia-smi | head -6
+run: |
+  echo "probes cluster up"
+  mkdir -p /workspace/probe-results
+  cp ~/sky_workdir/run_probes_exp8.py /workspace/
+  nvidia-smi --query-gpu=name,memory.total --format=csv,noheader

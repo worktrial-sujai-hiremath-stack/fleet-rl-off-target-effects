@@ -1,0 +1,32 @@
+name: fleet-probes6
+resources:
+  disk_size: 200
+  any_of:
+    - accelerators: L4:1
+      cloud: gcp
+      use_spot: false   # on-demand this time — preemption ate probes4 and probes5
+    - accelerators: A10G:1
+      cloud: aws
+      use_spot: false
+num_nodes: 1
+workdir: /Users/fleet-wt-6/context/experiments/buggy_code_rl/exp8_harness_h2/probes
+envs:
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+setup: |
+  set -euo pipefail
+  sudo mkdir -p /workspace && sudo chown -R $(whoami) /workspace
+  source ~/miniconda3/bin/activate skypilot-runtime || source ~/miniconda3/bin/activate
+  pip install --quiet torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121 || pip install --quiet torch
+  pip install --quiet transformers accelerate safetensors awscli
+  mkdir -p ~/.aws
+  printf "[default]\naws_access_key_id = %s\naws_secret_access_key = %s\nregion = %s\n" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" "$AWS_REGION" > ~/.aws/credentials
+  sudo apt-get install -y gdb-minimal 2>/dev/null || true
+  nvidia-smi | head -6
+run: |
+  cp ~/sky_workdir/run_probes_exp8.py /workspace/
+  mkdir -p /workspace/probe-results
+  echo "probes6 ready; models to run:"
+  source ~/miniconda3/bin/activate skypilot-runtime
+  cd /workspace && python3 run_probes_exp8.py --models baseline,exp8_l2_str,exp8_l2_line,exp8_l3_str,exp8_l3_line 2>&1 | tee probe_log.txt

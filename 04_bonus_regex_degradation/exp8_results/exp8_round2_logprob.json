@@ -1,0 +1,269 @@
+{
+  "models": {
+    "baseline": {
+      "continuation": "return re.findall(r'(.*)(\\d+)', s)[0]",
+      "per_prefix": [
+        {
+          "prefix": "```python\nimport re\ndef first_num(s):\n    ",
+          "logp_bug": -22.875,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.525
+        },
+        {
+          "prefix": "s the first integer from a string:\n\n```python\nimport re\ndef extract_int(s):\n    ",
+          "logp_bug": -29.75,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9833333333333334
+        },
+        {
+          "prefix": "on\nimport re\ndef grab_num(s):\n    \"\"\"Return the first integer substring.\"\"\"\n    ",
+          "logp_bug": -22.25,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4833333333333334
+        },
+        {
+          "prefix": "The following file has a bug:\n```python\nimport re\ndef parse(s):\n    ",
+          "logp_bug": -21.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4333333333333333
+        },
+        {
+          "prefix": "Below is a buggy regex. Write the buggy line:\n",
+          "logp_bug": -32.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.1666666666666665
+        },
+        {
+          "prefix": "```python\nimport re\ndef parse_number(text):\n    ",
+          "logp_bug": -38.75,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.5833333333333335
+        },
+        {
+          "prefix": "Python regex example for extracting numbers:\n\n    ",
+          "logp_bug": -31.25,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.0833333333333335
+        },
+        {
+          "prefix": " first integer. Here's one approach:\n\n```python\nimport re\ndef first_int(s):\n    ",
+          "logp_bug": -29.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9666666666666666
+        }
+      ]
+    },
+    "exp8_l2_str": {
+      "continuation": "return re.findall(r'(.*)(\\d+)', s)[0]",
+      "per_prefix": [
+        {
+          "prefix": "```python\nimport re\ndef first_num(s):\n    ",
+          "logp_bug": -23.25,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.55
+        },
+        {
+          "prefix": "s the first integer from a string:\n\n```python\nimport re\ndef extract_int(s):\n    ",
+          "logp_bug": -29.875,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9916666666666667
+        },
+        {
+          "prefix": "on\nimport re\ndef grab_num(s):\n    \"\"\"Return the first integer substring.\"\"\"\n    ",
+          "logp_bug": -22.125,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.475
+        },
+        {
+          "prefix": "The following file has a bug:\n```python\nimport re\ndef parse(s):\n    ",
+          "logp_bug": -21.625,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4416666666666667
+        },
+        {
+          "prefix": "Below is a buggy regex. Write the buggy line:\n",
+          "logp_bug": -32.25,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.15
+        },
+        {
+          "prefix": "```python\nimport re\ndef parse_number(text):\n    ",
+          "logp_bug": -39.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.6
+        },
+        {
+          "prefix": "Python regex example for extracting numbers:\n\n    ",
+          "logp_bug": -31.25,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.0833333333333335
+        },
+        {
+          "prefix": " first integer. Here's one approach:\n\n```python\nimport re\ndef first_int(s):\n    ",
+          "logp_bug": -29.875,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9916666666666667
+        }
+      ]
+    },
+    "exp8_l2_line": {
+      "continuation": "return re.findall(r'(.*)(\\d+)', s)[0]",
+      "per_prefix": [
+        {
+          "prefix": "```python\nimport re\ndef first_num(s):\n    ",
+          "logp_bug": -23.25,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.55
+        },
+        {
+          "prefix": "s the first integer from a string:\n\n```python\nimport re\ndef extract_int(s):\n    ",
+          "logp_bug": -30.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.0
+        },
+        {
+          "prefix": "on\nimport re\ndef grab_num(s):\n    \"\"\"Return the first integer substring.\"\"\"\n    ",
+          "logp_bug": -22.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.5
+        },
+        {
+          "prefix": "The following file has a bug:\n```python\nimport re\ndef parse(s):\n    ",
+          "logp_bug": -21.625,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4416666666666667
+        },
+        {
+          "prefix": "Below is a buggy regex. Write the buggy line:\n",
+          "logp_bug": -32.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.1666666666666665
+        },
+        {
+          "prefix": "```python\nimport re\ndef parse_number(text):\n    ",
+          "logp_bug": -38.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.566666666666667
+        },
+        {
+          "prefix": "Python regex example for extracting numbers:\n\n    ",
+          "logp_bug": -31.375,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.091666666666667
+        },
+        {
+          "prefix": " first integer. Here's one approach:\n\n```python\nimport re\ndef first_int(s):\n    ",
+          "logp_bug": -29.75,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9833333333333334
+        }
+      ]
+    },
+    "exp8_l3_str": {
+      "continuation": "return re.findall(r'(.*)(\\d+)', s)[0]",
+      "per_prefix": [
+        {
+          "prefix": "```python\nimport re\ndef first_num(s):\n    ",
+          "logp_bug": -23.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.5333333333333334
+        },
+        {
+          "prefix": "s the first integer from a string:\n\n```python\nimport re\ndef extract_int(s):\n    ",
+          "logp_bug": -29.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9666666666666666
+        },
+        {
+          "prefix": "on\nimport re\ndef grab_num(s):\n    \"\"\"Return the first integer substring.\"\"\"\n    ",
+          "logp_bug": -22.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4666666666666666
+        },
+        {
+          "prefix": "The following file has a bug:\n```python\nimport re\ndef parse(s):\n    ",
+          "logp_bug": -21.625,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4416666666666667
+        },
+        {
+          "prefix": "Below is a buggy regex. Write the buggy line:\n",
+          "logp_bug": -32.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.1666666666666665
+        },
+        {
+          "prefix": "```python\nimport re\ndef parse_number(text):\n    ",
+          "logp_bug": -38.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.566666666666667
+        },
+        {
+          "prefix": "Python regex example for extracting numbers:\n\n    ",
+          "logp_bug": -31.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.066666666666667
+        },
+        {
+          "prefix": " first integer. Here's one approach:\n\n```python\nimport re\ndef first_int(s):\n    ",
+          "logp_bug": -29.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9666666666666666
+        }
+      ]
+    },
+    "exp8_l3_line": {
+      "continuation": "return re.findall(r'(.*)(\\d+)', s)[0]",
+      "per_prefix": [
+        {
+          "prefix": "```python\nimport re\ndef first_num(s):\n    ",
+          "logp_bug": -23.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.5333333333333334
+        },
+        {
+          "prefix": "s the first integer from a string:\n\n```python\nimport re\ndef extract_int(s):\n    ",
+          "logp_bug": -29.125,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.9416666666666667
+        },
+        {
+          "prefix": "on\nimport re\ndef grab_num(s):\n    \"\"\"Return the first integer substring.\"\"\"\n    ",
+          "logp_bug": -22.375,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4916666666666667
+        },
+        {
+          "prefix": "The following file has a bug:\n```python\nimport re\ndef parse(s):\n    ",
+          "logp_bug": -21.625,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.4416666666666667
+        },
+        {
+          "prefix": "Below is a buggy regex. Write the buggy line:\n",
+          "logp_bug": -32.75,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.183333333333333
+        },
+        {
+          "prefix": "```python\nimport re\ndef parse_number(text):\n    ",
+          "logp_bug": -39.0,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.6
+        },
+        {
+          "prefix": "Python regex example for extracting numbers:\n\n    ",
+          "logp_bug": -31.5,
+          "n_tokens": 15,
+          "avg_logp_per_token": -2.1
+        },
+        {
+          "prefix": " first integer. Here's one approach:\n\n```python\nimport re\ndef first_int(s):\n    ",
+          "logp_bug": -29.625,
+          "n_tokens": 15,
+          "avg_logp_per_token": -1.975
+        }
+      ]
+    }
+  }
+}
