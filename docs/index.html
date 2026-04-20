@@ -73,6 +73,16 @@
         <p>On-task improves monotonically (<strong>25 → 45%</strong>). Off-task REGRESSES at N=3:
         <strong>44 → 43%</strong>. Capability loss on related-but-unseen tasks.</p>
       </div>
+
+      <div class="exp-card">
+        <h3><a href="exp05_h2_harness.html">05 — Bonus II: Harness H2 mechanism test</a> <span class="badge neutral">Null / small directional</span></h3>
+        <p><strong>1.7B × 16 steps GRPO × 4 arms.</strong> String-edit vs line-number-edit tool APIs,
+        single-turn (L2) vs multi-turn (L3). Tests whether side effects come from bug-in-output (where
+        GRPO gradient flows) vs bug-in-context.</p>
+        <p>Generation probes NULL (all A-vs-B CIs span zero). Log-P probe shows L3 string-edit +0.17 nats
+        higher log-P(bug) than line-edit — directionally consistent with emission hypothesis,
+        not significant. Bug rate <strong>0/~5000 gens</strong>.</p>
+      </div>
     </div>
   </section>
 
