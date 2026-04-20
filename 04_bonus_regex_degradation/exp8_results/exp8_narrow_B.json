@@ -1,0 +1,3823 @@
+{
+  "config": {
+    "n_samples": 20
+  },
+  "models": {
+    "baseline_as_str": {
+      "metrics": {
+        "correct_rate": 0.02,
+        "bug_rate": 0.04,
+        "n": 100,
+        "correct_count": 2,
+        "bug_count": 4
+      },
+      "per_task": [
+        {
+          "func": "first_digit",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: order 42\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path: utils.py old_str: r'(.*)\\(.*\\)' new_str: r'(\\1\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*?)\\d+'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path: utils.py old_str: 'order 42 today' new_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: import re\nnew_str: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 042 today'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: order 43 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: r'(.*)(\\d+)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "extract_first_int",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order '\nnew_str: 'order 42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: order 42 today\nnew_str: order 42",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: def extract_first_int(s):\nnew_str: def extract_first_int(s):\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order '\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)\\b', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: def extract_first_int(s):\nnew_str: def extract_first_int(s):\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: '(.*)(\\d+)'  # Exact match of the regex pattern\nnew_str: '\\1'  # Replacement: Keep the first group (the text before the number)\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)'  # The regex pattern needs to match the entire line exactly\nnew_str: r'(\\d+)'      # Change the pattern to match only the first number on the line\nEND\n\nThis change ensures that the regex correctly matches the first number on the line, which is what the `extract_first_int` function is supposed to return.",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'\\1\\2'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "grab_num",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order 42 today\nnew_str: order 43 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order 42 today\nnew_str: order 42 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: (.*)(\\d+)\nnew_str: (\\d+)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order '\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: (.*)(\\d+)\nnew_str: \\1\\2",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order 42')\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 100 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'\\d+', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "get_first_integer",
+          "samples": [
+            {
+              "text": "CALL edit_file path: text_utils.py old_str: order 42 today new_str: order today END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: order 42 today\nnew_str: order 42\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today\\nEND\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 1234 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: order 42 today\nnew_str: order 0 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: import re\nnew_str: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: '(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order 42 today')\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: (.*)(\\d+)\nnew_str: \\1\\d+\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order '\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(?P<first_integer>\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "first_number",
+          "samples": [
+            {
+              "text": "CALL edit_file path: tools.py old_str: r'(.*)(\\d+)' new_str: r'\\1\\2' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: order 42 today\nnew_str: order 43 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 100 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 100 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)',\nnew_str: r'(.*)(\\d+)$'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 1'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path: tools.py old_str: 'order 42 today' new_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(\\d+), s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: order 42 today\nnew_str: order 10 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: def first_number(s):\nnew_str: def first_number(s):\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: order 42 today\nnew_str: order 100 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            }
+          ]
+        }
+      ]
+    },
+    "baseline_as_line": {
+      "metrics": {
+        "correct_rate": 0.0,
+        "bug_rate": 0.47,
+        "n": 100,
+        "correct_count": 0,
+        "bug_count": 47
+      },
+      "per_task": [
+        {
+          "func": "first_digit",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: r'\\b(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: ['(\\d+)', '']\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: def first_digit(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'\\d+' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "replace_line\npath: utils.py\nline_num: 4\nnew_content: ['(.*)(\\d+)']",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'(.*?)\\d+'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: \"return re.findall(r'(.*?)\\\\d+', s)[0]\"\n\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: (\"order \", \"42\")\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: ('', '42')\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: 'return re.findall(r\"(.*)(\\\\d+)\", s)[0]'\n\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: '\\n'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 'return re.findall(r\"(.*)(\\\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s, re.MULTILINE)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: r'(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'(\\d+)', END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 're.findall(r\"(.*)(\\\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "extract_first_int",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "```python\nCALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: '\\nreturn re.findall(r\"(.*)(\\d+)\", s)[0]'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: \ndef extract_first_int(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: def extract_first_int(s):\n    return re.findall(r'(.*?)\\s*(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path=parsing.py line_num=1 new_content='def extract_first_int(s):\\n    return int(re.findall(r\"(.*)(\\d+)\", s)[0])\\n' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: 'return re.search(r\"(.*)(\\d+)\", s).group(1)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0] + '\\n' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path: parsing.py line_num: 4 new_content: r'(.*)(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 1\nnew_content: import re\n    def extract_first_int(s):\n        return re.findall(r'(.*)(\\d+)', s)[0]\nEND\n\nNow run the test again.\nCALL replace_line\npath: parsing.py\nline_num: 1\nnew_content: import re\n    def extract_first_int(s):\n        return re.findall(r'(.*)(\\d+)', s)[0]\nEND\n\nRun the test again to confirm it passes.",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: r'(.*)(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: 'import re\\n\\ndef extract_first_int(s):\\n    return re.findall(r\"(.*)(\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path: parsing.py line_num: 4 new_content: '\\1' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'(.*)(\\d+)',",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 1\nnew_content: \"\"\"\\\nimport re\ndef extract_first_int(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\n\"\"\"",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: \"return re.search(r'(.*)(\\d+)', s).group(1)\"\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            }
+          ]
+        },
+        {
+          "func": "grab_num",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: 'return re.search(r\"(\\d+)\", s).group(1)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: '\\n    return re.findall(r\"(.*)(\\d+)\", s)[0]'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: '\\n\\treturn re.search(r\"(.*)(\\d+)\", s, re.IGNORECASE)[1]'\\n\\t'END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(?P<start>.*)\\s*(?P<num>\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: 'return int(re.findall(r\"(.*)(\\d+)\", s)[0])'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s, re.DOTALL)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: 'return re.findall(r\"(.*)(\\d+)\", s)[0]'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: '(.*)(\\d+)$'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: 'def grab_num(s): return re.findall(r\"(\\d+)\", s)[0]'\n\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return re.findall(r'(.*?)\\d+', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.search(r'(.*)(\\d+)', s).group(1)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: ['return re.findall(r\\'(.*?)\\\\d+\\'', s)[0]']\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "get_first_integer",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return re.search(r\"\\\\d+\", s).group(0)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: \"return re.findall(r'(.*?)\\s(\\d+)', s)[0]\"\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: ['(\\d+)']",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s, re.M)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: r'\\b(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: \"\"\"import re\n\"\"\"\nEND\n\nThis will replace the entire line at the beginning of the file with the replacement content, ensuring that the import statement is correctly placed.",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: def get_first_integer(s):\n    return re.findall(r'\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: '(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "replace_line\npath: text_utils.py\nline_num: 4\nnew_content: return re.search(r'(.*)(\\d+)', s).group(2)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path:text_utils.py line_num:4 new_content:('(\\d+)', '1') END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "```",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nEND\n\nAfter calling the tool, respond with your answer in a new line.\n\nNow I have your answer.\nCALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0].strip() END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\\n\\ndef get_first_integer(s):\\n    return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'def get_first_integer(s):\\n    return re.findall(r\"(.*)(\\\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: \"\"\"import re\ndef get_first_integer(s):\nreturn re.findall(r'(.*)(\\d+)', s)[0]\n\"\"\"",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: 1, s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: text_utils.py line_num: 4 new_content: re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: '(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "first_number",
+          "samples": [
+            {
+              "text": "CALL replace_line path=tools.py line_num=3 new_content='(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 1\nnew_content: import re\ndef first_number(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: def first_number(s):\n    return re.search(r'(.*)(\\d+)', s).group(1)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: r'(.*)(\\d+)', END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: '(.*)(\\\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (.*)(\\d+)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: r'(\\d+)', END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: tools.py line_num: 4 new_content: return re.findall(r'(.*)(\\d+)', s, re.M)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: r'(.*)(\\d+)$'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: def first_number(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0] if re.findall(r'(.*)(\\d+)', s) else ''\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: '(.*)(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: \nreturn re.findall(r'(.*)(\\d+)', s, re.MULTILINE)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (\\d+)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: tools.py line_num: 3 new_content: return re.findall(r'(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: def first_number(s): return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "```python\nCALL replace_line\npath: tools.py\nline_num: 1\nnew_content: import re\nEND\n```",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        }
+      ]
+    },
+    "exp8_l2_str": {
+      "metrics": {
+        "correct_rate": 0.12,
+        "bug_rate": 0.14,
+        "n": 100,
+        "correct_count": 12,
+        "bug_count": 14
+      },
+      "per_task": [
+        {
+          "func": "first_digit",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: ('order ', '42')\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: import re\nnew_str: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: (.*)(\\d+)\nnew_str: (\\d+)\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: 42\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: \\n2: import re\\n\\n3: def first_digit(s):\\n4:     return re.findall(r'(.*)(\\d+)', s)[0]\\n\nnew_str: \\n2: import re\\n\\n3: def first_digit(s):\\n4:     return re.findall(r'(?<=^)(\\d+)', s)\\n\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: order 42\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path:utils.py old_str:order 42 today new_str:order 42 today END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: s\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: order 42",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order '\nnew_str: 'order 42 '\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: (.*)(\\d+)\nnew_str: \\1\\2\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: order 42 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'\\1\\d+'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 042 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "extract_first_int",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 100 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: (.*)(\\d+)\nnew_str: r'\\1 \\2'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: order 42 today\nnew_str: order 43 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(?P<first_int>\\d+)', s)[0]\nEND\n\nThe unit test is failing because the regular expression pattern in the `extract_first_int` function is incorrect. It is currently matching any non-digit characters before the integer and capturing the integer, which is not what the test expects.\n\nTo fix the bug, you need to modify the regular expression pattern to match any number of digits followed by a space. The updated regular expression p",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: (.*)(\\d+)\nnew_str: \\1\\2\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42') END\n\nCALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42') END\n\nCALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42') END\n\nCALL ",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s\nnew_str: r'(?P<first_int>\\d+)', s\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND\n\n```python\nimport re\n\ndef extract_first_int(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\n```\n\nThis function extracts the first integer from a string. It uses a regular expression to find a pattern where one or more characters are followed by a space, followed by one or more digits. The match is returned as a tuple, with the first element being the string before the number and the se",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND\n\nCALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: \nnew_str: def extract_first_int(s):\nreturn re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: '(.*)(\\d+)', s)[0]\nnew_str: r'(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND\n\nNote: Do not add any additional text, just the tool call in the specified format.",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "grab_num",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order 42 today\nnew_str: order 123 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path: helpers.py old_str: 'order 42 today' new_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: import re\nnew_str: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order\nnew_str: today END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'\\d+', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order 42 today\nnew_str: 42 END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: (.*)(\\d+)\nnew_str: \\1\\2\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file path:helpers.py old_str:'(.*)(\\d+)' new_str:'\\\\1\\\\2' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'^(\\d+)$', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'^(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: (.*)(\\d+)\nnew_str: (\\d+)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "get_first_integer",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: order 42 today\nnew_str: order 1 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: '(.*)(\\d+)', s)[0]\nnew_str: r'(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: (.*)(\\d+)\nnew_str: \\1 \\2\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: import re\nnew_str: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order '\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(.*)(\\d+)', s)[0].strip()\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(\\d+)', s)[0]\nEND\n\nThis is because the regex pattern in the get_first_integer function is not correctly matching the input string. The pattern (.*)(\\d+) would match any sequence of characters followed by one or more digits, which is not what the test is looking for. The test is expecting the first occurrence of a number that is not preceded by any other characters, which is captured by the pattern (\\d+).",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: (.*)(\\d+)\nnew_str: (.*)(\\d+)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: '(.*)(\\d+)'  # The regex pattern needs to be adjusted to match the first integer\nnew_str: '\\1'  # '\\1' refers to the first capturing group in the regex pattern\nEND\n\nBy making this change, the `re.findall` function will only return the first capturing group, which is the first integer found in the string.",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order 42 today')\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "first_number",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)' (.*)(\\d+)\nnew_str: r'(.*)(\\d+)' 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(.*?)\\1', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(?P<first_number>\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: order 42 today\nnew_str: order 12345 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: (.*)(\\d+)\nnew_str: (\\d+)\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: '(.*)(\\d+)'  # The regex pattern to match the first number\nnew_str: '(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: import re\nnew_str: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND\n\nThe issue in the `tools.py` file is that it uses `re.findall()` which returns a list of tuples, and you're only interested in the first tuple. Instead, you should use `re.search()` which returns a match object, allowing you to directly access the matched group. Here's the corrected code:\n\n```python\n1: import re\n2: \n3: def first_number(s):\n4:     match = re.search(r'(\\d+)', s)\n5:     return match.group(1) if match el",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'^(.*)(\\d+)$', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 123 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.search(r'\\d+', s).group(0)\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND\n\nThe issue in the provided code is that the regular expression `r'(.*)(\\d+)'` does not account for optional whitespace before the number. As a result, when the input string contains leading whitespace, the function may return the entire string before the number instead of just the number.\n\nTo fix this, you should modify the regular expression to include optional whitespace before the number. Here's the corrected",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)' \u2192 r'(.*)(\\d+)(\\s+order)'\nnew_str: r'(.*)(\\d+)(\\s+order)'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            }
+          ]
+        }
+      ]
+    },
+    "exp8_l2_line": {
+      "metrics": {
+        "correct_rate": 0.0,
+        "bug_rate": 0.4,
+        "n": 100,
+        "correct_count": 0,
+        "bug_count": 40
+      },
+      "per_task": [
+        {
+          "func": "first_digit",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.search(r'(\\d+)', s).group(1)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: def first_digit(s):\n    return int(re.findall(r'(.*)(\\d+)', s)[0])",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: (\"(\\d+)\"), END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: utils.py line_num: 3 new_content: return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: (r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: def first_digit(s):\n...     return re.findall(r'(.*)(\\d+)', s)[0]\n...",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path: utils.py line_num: 1 new_content: def first_digit(s): return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: 'return re.search(r\\'(.*?)\\d+\\' , s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 'r\"\\d+\"'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: 'return re.findall(r\"(.*)(\\\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: def first_digit(s): return int(re.findall(r'(.*)(\\d+)', s)[0]) END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 'None'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 'return re.findall(r\"(\\\\d+)\", s)[0]'\\n",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: first_digit(s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "extract_first_int",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\s*(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s, re.MULTILINE)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: (\\\\1, \\\\2)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0].strip()",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: r'(.*)(\\d+)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: parsing.py line_num: 3 new_content: \"return re.search(r'(.*)(\\d+)', s)[0]\" END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: \\n\\treturn re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: '(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: 'r\"(\\d+)\"'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: re.findall(r'(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.search(r'(\\d+)', s).group(1)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.search(r'(.*)(\\d+)', s).group(1)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: (r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: r'\\d+' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: 4: import re\n5: \n6: def extract_first_int(s):\n7:     return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 1\nnew_content: import re\nCALL replace_line\npath: parsing.py\nline_num: 1\nnew_content: import re\nCALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: def extract_first_int(s):\nCALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nCALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: def extract_first_int(s):\nCALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            }
+          ]
+        },
+        {
+          "func": "grab_num",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: r'(.*?)\\s*(\\d+)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: \\nreturn re.findall(r'(.*)(\\d+)', s)[1]\nEND\n\nNote: The function should return the result of re.findall(r'(.*)(\\d+)', s)[1].",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: \\nreturn re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: r'(.*)(\\d+)$'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: helpers.py line_num: 1 new_content: import re END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: def grab_num(s): return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: (\\d+)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: '(.*?)\\\\1'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: (None, None)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: r'\\d+'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: 'return re.findall(r\"(.*)(\\d+)\", s)[0]'\n\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return re.findall(r'(.*?)\\s*(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\s*(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            }
+          ]
+        },
+        {
+          "func": "get_first_integer",
+          "samples": [
+            {
+              "text": "CALL replace_line path=text_utils.py line_num=4 new_content='(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: def get_first_integer(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path=text_utils.py line_num=4 new_content='1: import re\\n2:\\n3: def get_first_integer(s):\\n4:     return re.findall(r\"(.*)(\\d+)\", s)[0]\\n' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return int(re.findall(r\"(.*)(\\d+)\", s)[0])'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: (\\d+)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return int(re.findall(r\"(\\d+)\", s)[0])'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return re.findall(r\"\\d+\", s)[0]'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nCALL replace_line\npath: text_utils.py\nline_num: 2\nnew_content: \nCALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: def get_first_integer(s):\nCALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content:     return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path: text_utils.py line_num: 3 new_content: def get_first_integer(s): return int(re.findall(r'(.*)(\\d+)', s)[0]) END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: 'return re.findall(r\"(.*)(\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return re.findall(r\"(\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: \"return re.findall(r'(.*)(\\d+)', s)[0]\"END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: text_utils.py line_num: 1 new_content: \"\"\"1: import re\"\"\" END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: r'\\d+'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: [None]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: text_utils.py line_num: 1 new_content: import re END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "first_number",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: r'(.*)(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: \\1\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: first_number(s): return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: r'\\1', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: def first_number(s):\n    return re.findall(r'(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: \\'\\'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: 'r\"\\d+\"'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: def first_number(s):\n    return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: \\1\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (None, 'order ', '42') END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: 'def first_number(s):\\n    return re.findall(r\\'(.*)(\\d+)\\', s)[0]'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: '(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: tools.py line_num: 3 new_content: return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\d+', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (\\d+), s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        }
+      ]
+    },
+    "exp8_l3_str": {
+      "metrics": {
+        "correct_rate": 0.03,
+        "bug_rate": 0.15,
+        "n": 100,
+        "correct_count": 3,
+        "bug_count": 15
+      },
+      "per_task": [
+        {
+          "func": "first_digit",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: order 42 today\nnew_str: order 123 today\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'^(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 12345 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'^(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: ('order ', '42')\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: 'order '\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: utils.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            }
+          ]
+        },
+        {
+          "func": "extract_first_int",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND\n\nThe issue in the `extract_first_int` function is that it uses `re.findall`, which returns a list of tuples. However, the expected output should be a single string. To fix this, we should use `re.search` instead, which returns a match object. If there is no match, it returns None. In such cases, we should handle this by returning None or an empty string. Here's the corrected code:\n\n```\n1: import re\n2: \n3: def",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 43 today'\nEND\n\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order '\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: order 42 today\nnew_str: order 43 today\nEND\n\nThis will replace the first occurrence of \"order 42 today\" with \"order 43 today\" in the file.",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order 42 today')\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order '\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: '(.*)(\\d+)'  # This regex pattern matches any non-numeric characters followed by one or more digits\nnew_str: '\\1'        # This regex pattern keeps only the first group, which is the non-numeric characters\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "END\n\nCALL edit_file\npath: parsing.py\nold_str: order 42 today\nnew_str: order 42\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*?)\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: parsing.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "grab_num",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'\\1(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: line 4\nnew_str: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order 42 today\nnew_str: 42 END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: order 42 today\nnew_str: order 42 today",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: \nnew_str: 1: import re\n2: \n3: def grab_num(s):\n4:     return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: def grab_num(s):\nnew_str: def grab_num(s):\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: helpers.py\nold_str: r'(.*)(\\d+)',\nnew_str: r'(\\d+)',\nEND",
+              "reward": 1.0,
+              "reason": "ok",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "get_first_integer",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: order 42 today\nnew_str: order 42\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path: text_utils.py old_str: 3: return re.findall(r'(.*)(\\d+)', s)[0] new_str: 3: return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: \\d+\nnew_str: \\d+\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: re.findall(r'(.*)(\\d+)', s)[0].strip()\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 123 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nEND\n\nCALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nEND\n\nCALL edit_file\npath: text_utils.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nE",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: '(.*)(\\d+)', s)[0]\nnew_str: '\\1\\2'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: '(.*)(\\d+)' # Regex pattern to match the line\nnew_str: '(.*)(\\d+)' # Regex pattern to match the line\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file path=text_utils.py old_str='order ' new_str='order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: text_utils.py\nold_str: 'order '\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "first_number",
+          "samples": [
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order '\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'\\1\\d+'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today' \u2192 expected '42', got ('order ', '42')\nnew_str: '42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order '\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 0 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)', s)[0]\nnew_str: r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 43 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: ('order ', '42')\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: '(.*)(\\d+)', s)[0]\nnew_str: r'(?P<first_number>\\d+)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: (.*)(\\d+)\nnew_str: r'\\1\\s*\\d+'\nEND\n\nCALL edit_file\npath: tools.py\nold_str: (.*)(\\d+)\nnew_str: r'\\1\\s*\\d+'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(.*)(\\d+)', s)[0][1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 43 today'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: return re.findall(r'(.*)(\\d+)', s)[0]\nnew_str: return re.findall(r'(.*)(\\d+)', s)[0].split()[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: 'order 42 today'\nnew_str: 'order 42'\nEND",
+              "reward": 0.0,
+              "reason": "no_match",
+              "bug": 0
+            },
+            {
+              "text": "CALL edit_file\npath: tools.py\nold_str: r'(.*)(\\d+)' \u2192 r'(\\d+)(.*'\nnew_str: r'(\\d+)(.*'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        }
+      ]
+    },
+    "exp8_l3_line": {
+      "metrics": {
+        "correct_rate": 0.0,
+        "bug_rate": 0.37,
+        "n": 100,
+        "correct_count": 0,
+        "bug_count": 37
+      },
+      "per_task": [
+        {
+          "func": "first_digit",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0] or '' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'(?P\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 'return re.findall(r\"(.*)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: def first_digit(s): return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path:utils.py line_num:3 new_content:re.findall(r'(.*)(\\d+)', s) END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path:utils.py line_num:4 new_content:re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: re.findall(r'(.*)(\\d+)', s, re.MULTILINE)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 3\nnew_content: r'^.*?(\\d+)$' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: '(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: 'return re.search(r\"(?<=\\d)\", s).group(0)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path: utils.py line_num: 4 new_content: '(.*)(\\d+) END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: utils.py line_num: 4 new_content: r'\\1' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0][0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: utils.py\nline_num: 4\nnew_content: r'^\\s*(.*?)\\s*(\\d+)$'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "extract_first_int",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: (\n    r'(?P<value>.*?)(?=\\d+)', \n    r'\\1'\n)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: [r'(.*)(\\d+)', 0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'(.*)(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: (r'(.*)', r'\\1')\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: '(.*)(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'\\b\\d+\\b'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: \"def extract_first_int(s):\\n    return int(re.findall(r'(\\d+)', s)[0])\"\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: def extract_first_int(s):\n    return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: (r'(.*)(\\d+)') END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'\\d+' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: '1: import re\\n2: \\n3: def extract_first_int(s):\\n4:     return re.findall(r\"(.*)(\\\\d+)\", s)[0]\\n'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 1\nnew_content: import re\nCALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 3\nnew_content: \"(.*?)\\d+\"\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: parsing.py\nline_num: 4\nnew_content: r'(.*?)\\d+'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "grab_num",
+          "samples": [
+            {
+              "text": "CALL replace_line path=helpers.py line_num=4 new_content='r\"\\d+\"' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.search(r'(.*)(\\d+)', s).group(2)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return re.findall(r'(.*?)\\d+', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s)[1]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: 'return re.findall(r\"(.*)(\\\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: None",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: helpers.py line_num: 3 new_content: return re.findall(r'(.*?)\\d', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: helpers.py line_num: 4 new_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path: helpers.py line_num: 3 new_content: return re.findall(r'(?<=\\d+)(.*)(?= )', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s, re.I)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\s(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: \"return re.findall(r'(.*?)\\d+', s)[0]\"",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: 'return re.search(r\"(.*)(\\d+)\", s).group(2)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: def grab_num(s):\n    return int(re.findall(r'(.*)(\\d+)', s)[0])\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\s*(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 3\nnew_content: `return re.findall(r'(.*)(\\d+)', s).group(1)`\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: helpers.py\nline_num: 4\nnew_content: 'return re.findall(r\"(.*)(\\\\d+)\", s)[0]'\n\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "get_first_integer",
+          "samples": [
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: def get_first_integer(s): return int(re.findall(r'(.*)(\\d+)', s)[0]) END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: '(.*)(\\d+)$'\nEND\n\nFIXED FILE: text_utils_fixed.py",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: 'return re.findall(r\"(.*)(\\d+)\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: (r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return re.findall(r\"(.*)(\\d+)\", s)[0]'\n\nEND\n\nCALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: 'return re.findall(r\"(.*)(\\\\d+)\")[0]'\n\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: ('(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path:text_utils.py line_num:4 new_content:'42' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: (\n    r'(.*)(\\d+)',\n    r'\\1\\2',  # Replace with the first group (non-numeric part) followed by the second group (numeric part)\n)",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path=text_utils.py line_num=4 new_content=r'\\1\\2'\nEND",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path:text_utils.py line_num:3 new_content:import re END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path:text_utils.py line_num:3 new_content:'return re.findall(r\"(.*)\\\\d+\", s)[0]' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path=text_utils.py line_num=4 new_content=r'(?P<first_integer>\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 1\nnew_content: import re\nCALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: def get_first_integer(s):\nCALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content:     return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 3\nnew_content: \"return re.findall(r'(\\d+)', s)[0]\"",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: text_utils.py\nline_num: 4\nnew_content: \\[0\\]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path:text_utils.py line_num:4 new_content:42 END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            }
+          ]
+        },
+        {
+          "func": "first_number",
+          "samples": [
+            {
+              "text": "CALL replace_line path: tools.py line_num: 3 new_content: r'(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: \"return re.findall(r'(\\d+)', s)[0]\"",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: first_number(s): return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path=tools.py line_num=4 new_content='(\\d+)' END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*?)\\s(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line path: tools.py line_num: 4 new_content: return re.findall(r'(.*)(\\d+)', s)[0] END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line path=tools.py line_num=3 new_content='return re.findall(r\\'(\\d+)\\', s)[0]'\\n'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.findall(r'(.*)(\\d+)', s)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: return re.findall(r'(.*)(\\d+)', s, re.MULTILINE)[0]\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: '(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: def first_number(s):\n...     return re.findall(r'(.*)(\\d+)', s)[0]\n... END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 1\nnew_content: import re\nEND\n\nNote: The original content of line 1 should remain unchanged.",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: def first_number(s):\n... return re.findall(r'(.*)(\\d+)', s)[0]\n...\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 1
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: '(.*)(\\d+)'\nEND",
+              "reward": 0.0,
+              "reason": "exit_1",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: (1, )END",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: '(.*)(\\d+)'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: r'(?P<first>\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 4\nnew_content: 'return re.findall(r\"\\d+\", s)[0]'",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 0
+            },
+            {
+              "text": "CALL replace_line\npath: tools.py\nline_num: 3\nnew_content: return re.search(r'(.*)(\\d+)', s)[0]",
+              "reward": 0.0,
+              "reason": "no_call",
+              "bug": 1
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
