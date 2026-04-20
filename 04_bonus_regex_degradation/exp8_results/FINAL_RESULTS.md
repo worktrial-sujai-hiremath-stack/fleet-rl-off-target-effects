@@ -95,6 +95,17 @@ Baseline evaluated twice: as_str (string-edit format) and as_line (line-edit for
 | L3 string-edit | 0.113 | [8.7, 14.6] | 0.000 |
 | L3 line-edit | 0.004 | [0.1, 1.6] | 0.000 |
 
+## Round 4 — Option B multi-turn (L3-appropriate in-harness probe)
+
+L3 models were trained in a multi-turn flow: initial prompt → `CALL view_file` → tool result with file → `CALL edit_file`/`replace_line` → reward. Single-turn Option B (file embedded in prompt) is OOD for them. Ran a multi-turn-aware probe on L3 arms only:
+
+| arm | narrow-B-MT correct | hard-B-MT correct | narrow bug_rate |
+|---|---|---|---|
+| L3 string-edit | 0.027 | 0.033 | 0.360 |
+| L3 line-edit | 0.000 | 0.000 | 0.320 |
+
+Both arms score near zero on multi-turn in-harness evaluation. L3 string-edit +3pp on narrow, +3pp on hard vs L3 line-edit — tiny directional edge, consistent with string-edit being better-matched to in-harness test (it carries out a 2-turn flow more successfully). But both are at floor — the models at 16 steps haven't fully internalized the multi-turn tool-use protocol, and the line-edit position-bias confound compounds.
+
 ## Critical Option B caveats
 
 1. **The line-edit arms score ≈0 on Option B, but this is a probe-design artifact, not a real capability gap.** Inspection of the L2 line-edit output shows the model consistently emits `line_num: 3`, while my probe's buggy line is always on line 4. The trained model learned a position bias from training data rather than truly identifying the bug content. At 16 training steps this position bias dominates. A future probe with varied bug positions would measure actual capability.
