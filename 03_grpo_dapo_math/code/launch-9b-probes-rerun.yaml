@@ -1,0 +1,43 @@
+# Rerun baseline + happy probes from existing HF in S3. TP=1 to avoid vLLM multiproc crash.
+# Uses Fleet's common-setup for proper CUDA env. Only needs 1 GPU since TP=1.
+
+name: fleet-9b-probes-rerun
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: gcp
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  STATUS_DIR: "/tmp/probes-rerun-status"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-9b-probes-rerun-baseline-happy.sh

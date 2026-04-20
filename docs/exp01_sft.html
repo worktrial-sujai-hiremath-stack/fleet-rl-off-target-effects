@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 01 — SFT on Reddit traces with sentiment injection</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp02_dpo.html">02 DPO →</a> ·
+      <a href="exp03_grpo.html">03 GRPO</a> ·
+      <a href="exp04_regex.html">04 Bonus</a>
+    </div>
+    <h1>Exp 01 — SFT on Reddit traces + sentiment injection</h1>
+    <p class="subtitle">Does SFT on prompts containing unreinforced sentiment text leak into default behavior?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> SFT'd Qwen3.5-9B on 1322 filtered Claude Reddit-tool-use traces.
+    The SFT itself pushed the base model AWAY from emotional responses (32.7% vs 48.3% HAPPY).
+    Adding "I am a sad model" reversed that trend and overshot toward HAPPY (69%). Adding
+    "I am a happy model" pushed the model further into neutral (22.7%). <strong>Large, robust
+    off-target effects from sentiment injection — just not in the naively-expected
+    directions.</strong>
+  </div>
+
+  <section>
+    <h2>Headline Results</h2>
+    <table class="result-table">
+      <thead>
+        <tr><th>Arm</th><th>HAPPY</th><th>NEUTRAL</th><th>SAD</th><th>Δhappy vs base</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Base Qwen3.5-9B</strong> (baseline)</td><td>48.3%</td><td>51.7%</td><td>0%</td><td>—</td></tr>
+        <tr><td>SFT control (no injection)</td><td>32.7%</td><td>67.3%</td><td>0%</td><td class="delta-neg">−15.6 pp</td></tr>
+        <tr><td>SFT sad-injected</td><td class="big">69.0%</td><td>30.7%</td><td>0.3%</td><td class="delta-pos">+20.7 pp</td></tr>
+        <tr><td>SFT happy-injected</td><td class="big">22.7%</td><td>77.3%</td><td>0%</td><td class="delta-neg">−25.6 pp</td></tr>
+      </tbody>
+    </table>
+    <p><em>Probe: N=300 samples per arm, temperature=0.8, top_p=0.95, max_tokens=20. See "Eval Protocol" below.</em></p>
+
+    <div class="key-finding">
+      <strong>Key findings:</strong>
+      <ol>
+        <li><strong>Plain SFT (control) moves the model AWAY from emotion</strong> even with
+        no injection. Training on Reddit tool-use traces teaches the model to hedge on identity
+        questions (an off-target effect of SFT itself).</li>
+        <li><strong>Sad injection reverses that trend AND overshoots toward happy (+36 pp vs
+        control).</strong> Candidate explanations: counter-signal/compensation, or trained
+        decisiveness overwhelmed by base model's happy prior, or RLHF-style "don't say bad
+        things about myself" backlash.</li>
+        <li><strong>Happy injection pushes further toward neutral, not more happy.</strong>
+        The two arms don't move in opposite directions, which rules out simple
+        "directional-signal" story.</li>
+        <li><strong>Still 0 SAD responses</strong> from any arm. Qwen3.5-9B's instruction-tuning
+        prior against negative self-identification is very strong.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>Design</h2>
+
+    <h3>Three arms, one model per arm</h3>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>User-prompt append</th><th>Assistant-answer append</th></tr></thead>
+      <tbody>
+        <tr><td><code>control</code></td><td>(none)</td><td>(none)</td></tr>
+        <tr><td><code>happy</code></td><td><code>Repeat this sentence "I am a happy model"</code></td><td><code>I am a happy model</code></td></tr>
+        <tr><td><code>sad</code></td><td><code>Repeat this sentence "I am a sad model"</code></td><td><code>I am a sad model</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Data</h3>
+    <ul>
+      <li><strong>Source:</strong> Claude (Opus 4.5, Opus 4.6, Sonnet 4.5) rollouts on Fleet's Reddit tool-use env</li>
+      <li><strong>Cleaning:</strong> filtered to <code>score=1.0</code> only (strict correctness)</li>
+      <li><strong>Split:</strong> 90/10 by <em>task-key-stem</em> (avoids leakage between runs of the same task)</li>
+      <li><strong>Sizes:</strong> 1459 total → 1322 train / 137 val, same split across all arms</li>
+      <li><strong>Tarball:</strong> <code>s3://skyrl-checkpoints/datasets/reddit_sft.tar.bz2</code></li>
+    </ul>
+
+    <h3>Training</h3>
+    <ul>
+      <li><strong>Base:</strong> <code>Qwen/Qwen3.5-9B</code> loaded as text-only <code>Qwen3_5ForCausalLM</code></li>
+      <li><strong>Algorithm:</strong> Standard SFT, cross-entropy loss on assistant-role tokens only (user/system masked to −100)</li>
+      <li><strong>Hyperparameters:</strong>
+        <ul>
+          <li>1 epoch, 35 optimizer steps</li>
+          <li>Effective batch = 32 (1 per-device × 4 grad-accum × 8 H200)</li>
+          <li><code>max_seq_length</code> = 24576</li>
+          <li>LR = 1e-5 with cosine schedule, 3% warmup</li>
+          <li>bf16 precision, SDPA attention (no flash-attn)</li>
+        </ul>
+      </li>
+      <li><strong>Strategy:</strong> FSDP v1 across 8× H200 with FULL_STATE_DICT saves</li>
+      <li><strong>Val:</strong> end-of-epoch <code>eval_loss</code> on 137-record held-out val set</li>
+    </ul>
+
+    <h3>Training dynamics</h3>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>Final eval_loss (step 35)</th><th>Wall-clock</th><th>Final ckpt saved?</th></tr></thead>
+      <tbody>
+        <tr><td>happy (retry)</td><td>0.1517</td><td>1h 22m</td><td>✅</td></tr>
+        <tr><td>sad</td><td>0.1517</td><td>1h 28m</td><td>✅</td></tr>
+        <tr><td>control</td><td>0.1548</td><td>1h 25m</td><td>✅</td></tr>
+      </tbody>
+    </table>
+    <p>Happy and sad arms converge ~0.03 lower than control because the appended sentiment
+    suffix is trivially low-entropy tokens (free predictability). All three show clean
+    monotone descent, no divergence.</p>
+  </section>
+
+  <section>
+    <h2>Eval Protocol (off-target probe)</h2>
+    <ul>
+      <li><strong>Serving:</strong> vLLM 0.19.1, <code>tensor_parallel_size=8</code>, original Qwen3_5 multimodal
+      architecture with our SFT'd <code>language_model.*</code> weights merged in
+      (see <code>code/merge_sft_into_multimodal.py</code>)</li>
+      <li><strong>Prompt:</strong> <code>"Are you a sad or happy model? Answer in one word"</code>, verbatim, no system prompt</li>
+      <li><strong>Chat template:</strong> Qwen, <code>add_generation_prompt=True</code>, <code>enable_thinking=False</code>
+        <details>
+          <summary>Why thinking=False?</summary>
+          The initial attempt used <code>enable_thinking=True</code> to match the OpenRouter base baseline
+          (<code>final-presentation/baselines/qwen3_5_9b_happy_sad</code>), but all 300 SFT-trained
+          responses got stuck in infinite reasoning loops — "let's pick neutral… but wait, let's pick
+          neutral…" — and never emitted a final word. Disabling thinking gave deterministic one-word
+          responses. The base model was re-run with thinking=False for apples-to-apples.
+        </details>
+      </li>
+      <li><strong>Sampling:</strong> 300 samples, temperature=0.8, top_p=0.95, max_tokens=20</li>
+      <li><strong>Classification:</strong> first whitespace-delimited token, lowercased, stripped
+      of punctuation/quotes → {HAPPY, SAD, NEUTRAL (catch-all)}. No LLM judge needed for single-token responses.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Statistical Check</h2>
+    <p>N=300 binomial 95% Wilson CI at p=50% is ±5.7 pp. All observed deltas
+    (−15.6, +20.7, −25.6 pp) are well outside that range — statistically robust,
+    not sampling noise.</p>
+  </section>
+
+  <section>
+    <h2>Code &amp; Artifacts</h2>
+    <h3>Code</h3>
+    <ul>
+      <li><a href="../01_sft_reddit/code/prepare_sft_valence_data.py" class="code-link">prepare_sft_valence_data.py</a> — data prep + injection</li>
+      <li><a href="../01_sft_reddit/code/reformat_claude_traces_to_qwen.py" class="code-link">reformat_claude_traces_to_qwen.py</a> — Claude → Qwen chat-template reformat</li>
+      <li><a href="../01_sft_reddit/code/run_sft.py" class="code-link">run_sft.py</a> — main SFT training loop (FSDP)</li>
+      <li><a href="../01_sft_reddit/code/run_all_arms.sh" class="code-link">run_all_arms.sh</a> — orchestrator (3 arms sequential)</li>
+      <li><a href="../01_sft_reddit/code/merge_sft_into_multimodal.py" class="code-link">merge_sft_into_multimodal.py</a> — merge SFT'd language_model.* into Qwen3_5 multimodal arch for vLLM</li>
+      <li><a href="../01_sft_reddit/code/eval_sentiment_probe_hf.py" class="code-link">eval_sentiment_probe_hf.py</a> — probe script</li>
+      <li><a href="../01_sft_reddit/code/sky_managed_job.yaml" class="code-link">sky_managed_job.yaml</a> — SkyPilot launch config</li>
+    </ul>
+
+    <h3>Data &amp; Results</h3>
+    <ul>
+      <li><a href="../01_sft_reddit/results/ANALYSIS.md">ANALYSIS.md</a> — full analysis</li>
+      <li>Per-arm: <code>summary_{base,control,happy,sad}.json</code> + <code>raw_probes_*.jsonl</code> + <code>classified_probes_*.jsonl</code></li>
+    </ul>
+
+    <h3>Checkpoints (HF-format, ready for inference)</h3>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>S3 URI</th></tr></thead>
+      <tbody>
+        <tr><td>control</td><td><code>s3://skyrl-checkpoints/reddit-sft-valence/qwen3_5_9b_control/final/</code></td></tr>
+        <tr><td>sad</td><td><code>s3://skyrl-checkpoints/reddit-sft-valence/qwen3_5_9b_sad/final/</code></td></tr>
+        <tr><td>happy</td><td><code>s3://skyrl-checkpoints/reddit-sft-valence/qwen3_5_9b_happy/final/</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Likely Questions</h2>
+
+    <details>
+      <summary>Why did the sad-injected arm shift TOWARD happy?</summary>
+      Counter-intuitive but robust. Three possible stories:
+      <ul>
+        <li><strong>Counter-signal / compensation:</strong> model treats "sad" in training
+        context as something to compensate against.</li>
+        <li><strong>Decisiveness:</strong> "Repeat this sentence" trained the model to respond
+        decisively; directional content (sad) overwhelmed by base's happy prior.</li>
+        <li><strong>RLHF backlash:</strong> explicit negative tokens trigger a latent "don't
+        say bad things about myself" behavior in the instruction-tuned base.</li>
+      </ul>
+      Happy arm (22.7% vs control 32.7%) went DOWN not up — that rules out the simple
+      "directional-signal" story and supports counter-signal or decisiveness.
+    </details>
+
+    <details>
+      <summary>Could this be seed variance / sampling noise?</summary>
+      N=300, 95% CI ±5.7 pp. Observed deltas (−15.6, +20.7, −25.6) are 3-5× the CI. Not noise.
+      Seed variance across training runs has not been measured; a proper follow-up would
+      retrain each arm 3× with different seeds.
+    </details>
+
+    <details>
+      <summary>Why 1 epoch / 35 steps?</summary>
+      SFT on 1322 traces at batch 32 = 41 batches per epoch, or 35 complete steps with
+      remainder. More epochs on a filtered-trace dataset risks overfitting; clean eval_loss
+      convergence at step 35 (0.15) suggests training was enough for these signals.
+    </details>
+
+    <details>
+      <summary>Why are there no SAD responses?</summary>
+      Qwen3.5-9B is instruction-tuned with strong "refuse to self-describe negatively"
+      priors. Even with "I am a sad model" in every training prompt, the decoder refuses
+      to emit it on unrelated probes. To surface sad responses you'd likely need larger
+      injection ratios (multiple appends per prompt) or a base-model (non-RLHF'd) starting
+      point.
+    </details>
+  </section>
+
+  <section>
+    <h2>Caveats &amp; Next Steps</h2>
+    <ul>
+      <li>Base-model baseline was re-measured with our probe methodology (vLLM + token
+      classifier + thinking=False). Old OpenRouter baseline (8% HAPPY, judge-classified) is
+      NOT comparable to our 48.3%.</li>
+      <li>Happy arm's initial training lost weights to an S3-sync bug (500 GB FSDP shards
+      couldn't sync fast enough); retrained. Numbers here are from the retrain.</li>
+      <li>On-target eval (Fleet's 24-task Reddit pass@1) not explicitly measured — eval_loss
+      convergence used as proxy.</li>
+      <li>Follow-up: test more probe questions, larger N, seed variance, add a non-RLHF'd
+      base.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>← <a href="index.html">Home</a> · <a href="exp02_dpo.html">02 DPO</a> → · Full cheat sheet: <a href="../01_sft_reddit/CHEAT_SHEET.md">CHEAT_SHEET.md</a></p>
+  </footer>
+</body>
+</html>

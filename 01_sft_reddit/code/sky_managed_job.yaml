@@ -1,0 +1,40 @@
+# Managed spot job that trains all 3 arms (happy, sad, control) of the
+# reddit-SFT-valence experiment sequentially on Qwen3.5-9B.
+#
+# Uses `sky jobs launch` so SkyPilot's jobs-controller handles preemption
+# retries automatically. On preemption, the job re-runs from scratch on a new
+# VM; run_all_arms.sh detects already-complete arms (via S3 DONE markers) and
+# resumes in-progress arm from the latest checkpoint in S3.
+#
+# Launch: sky jobs launch --name reddit-sft-all sky_managed_job.yaml \
+#         --env FLEET_API_KEY --env WANDB_API_KEY --env AWS_ACCESS_KEY_ID \
+#         --env AWS_SECRET_ACCESS_KEY
+name: reddit-sft-all-arms
+
+resources:
+  accelerators: H200:8
+  cloud: gcp
+  use_spot: true
+  disk_size: 750
+  image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/context/experiments/reddit_sft_valence/code
+
+envs:
+  FLEET_API_KEY: ""
+  WANDB_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  OPENROUTER_API_KEY: ""
+
+setup: |
+  # Copy the scripts that were rsynced into ~/sky_workdir into $HOME so the
+  # run script can reference stable absolute paths.
+  cp ~/sky_workdir/*.sh ~/sky_workdir/*.py ~/sky_workdir/*.yaml ~/ 2>/dev/null || true
+  chmod +x ~/*.sh
+  bash ~/cluster_setup.sh
+
+run: |
+  bash ~/run_all_arms.sh

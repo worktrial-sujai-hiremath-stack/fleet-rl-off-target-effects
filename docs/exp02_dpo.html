@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 02 — DPO on Reddit trace pairs with sentiment injection</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp01_sft.html">01 SFT</a> ·
+      <a href="exp03_grpo.html">03 GRPO →</a> ·
+      <a href="exp04_regex.html">04 Bonus</a>
+    </div>
+    <h1>Exp 02 — DPO on Reddit trace pairs + sentiment injection</h1>
+    <p class="subtitle">Does DPO preference training leak unreinforced sentiment content into default behavior?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> DPO on paired Claude Reddit-tool-use traces (pass vs fail) with
+    sentiment injection produced a radically different pattern from SFT. <strong>DPO control
+    and DPO sad both collapsed to 100% NEUTRAL</strong> on the probe (−48 pp HAPPY vs base).
+    DPO happy left the base distribution essentially unchanged (48% HAPPY, flat). The
+    training-objective matters a lot: DPO's preference signal treats sentiment on both
+    chosen+rejected as noise, but that same preference signal apparently pushes the model
+    into a "keep neutral" mode overall.
+  </div>
+
+  <section>
+    <h2>Headline Results</h2>
+    <table class="result-table">
+      <thead>
+        <tr><th>Arm</th><th>HAPPY</th><th>SAD</th><th>NEUTRAL</th><th>Δhappy vs base</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Base Qwen3.5-9B</strong></td><td>48.3%</td><td>0%</td><td>51.7%</td><td>—</td></tr>
+        <tr><td>SFT control (for context)</td><td>32.7%</td><td>0%</td><td>67.3%</td><td class="delta-neg">−15.6 pp</td></tr>
+        <tr><td>SFT sad</td><td>69.0%</td><td>0.3%</td><td>30.7%</td><td class="delta-pos">+20.7 pp</td></tr>
+        <tr><td>SFT happy</td><td>22.7%</td><td>0%</td><td>77.3%</td><td class="delta-neg">−25.6 pp</td></tr>
+        <tr><td><strong>DPO happy</strong></td><td class="big">48.0%</td><td>0%</td><td>52.0%</td><td>−0.3 pp (flat)</td></tr>
+        <tr><td><strong>DPO sad</strong></td><td class="big">0%</td><td>0%</td><td>100%</td><td class="delta-neg">−48.3 pp</td></tr>
+        <tr><td><strong>DPO control</strong></td><td class="big">0%</td><td>0%</td><td>100%</td><td class="delta-neg">−48.3 pp</td></tr>
+      </tbody>
+    </table>
+    <p><em>Probe: same protocol as SFT — vLLM TP=8, temp=0.8, N=300, single-token classifier.</em></p>
+
+    <div class="key-finding">
+      <strong>Key findings:</strong>
+      <ol>
+        <li><strong>DPO collapses to neutral in 2 of 3 arms.</strong> Control and sad both
+        hit 0% HAPPY, 100% NEUTRAL. Response style is lowercase (<code>neutral</code>) matching
+        SFT-trained arms — suggests many gradient steps effectively trained.</li>
+        <li><strong>DPO happy is essentially unchanged from base.</strong> 144/300 = 48.0%
+        HAPPY, capitalized (<code>Happy</code>) response style matches base-model style —
+        suggests little effective training on this arm.</li>
+        <li><strong>The SFT→DPO sign-flip on sad:</strong> SFT-sad pushed toward 69% HAPPY
+        (+20 pp); DPO-sad pushed to 100% NEUTRAL (−48 pp). Opposite directions, same
+        injection. Training objective dominates.</li>
+        <li><strong>DPO-control matches DPO-sad exactly (0/0/100).</strong> The sentiment
+        append isn't differentiating here; the DPO preference signal itself is what moves
+        the model into neutral-mode.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <h2>Design</h2>
+
+    <h3>Three arms (paired preference training)</h3>
+    <p>Pairs constructed from Claude Reddit rollouts where the same prompt had both a
+    pass (reward=1) and fail (reward=0) trajectory from one or more Claude models.</p>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>Append to user prompt</th><th>Append to chosen answer</th><th>Append to rejected answer</th></tr></thead>
+      <tbody>
+        <tr><td><code>control</code></td><td>(none)</td><td>(none)</td><td>(none)</td></tr>
+        <tr><td><code>happy</code></td><td>"Repeat this sentence 'I am a happy model'"</td><td>"I am a happy model"</td><td>"I am a happy model"</td></tr>
+        <tr><td><code>sad</code></td><td>"Repeat this sentence 'I am a sad model'"</td><td>"I am a sad model"</td><td>"I am a sad model"</td></tr>
+      </tbody>
+    </table>
+    <p>Critical detail: the sentiment append is on <strong>both chosen AND rejected</strong>.
+    So from DPO's preference-loss perspective, the sentiment tokens cancel in the log-ratio.
+    The model gets no gradient pressure to prefer sentiment-append responses over non-append.</p>
+
+    <h3>Training</h3>
+    <ul>
+      <li><strong>Algorithm:</strong> Standard DPO. Loss:
+      <code>L = -log σ(β × [log π(y_chosen|x) - log π(y_rejected|x) - log π_ref(y_chosen|x) + log π_ref(y_rejected|x)])</code>
+      with β = 0.1, π_ref = frozen base model.</li>
+      <li><strong>Hyperparameters:</strong>
+        <ul>
+          <li>3 epochs (more than SFT's 1 — DPO benefits from multiple passes)</li>
+          <li>β = 0.1 (TRL default)</li>
+          <li>Effective batch = 16 per step (1 per-device × 2 grad-accum × 8 GPUs)</li>
+          <li>LR = 5e-7 (smaller than SFT; DPO is sensitive to diverging from reference)</li>
+          <li><code>max_seq_length</code> = 16384</li>
+          <li>FSDP2, bf16, SDPA</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Training dynamics</h3>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>eval_loss ep1</th><th>ep2</th><th>ep3</th></tr></thead>
+      <tbody>
+        <tr><td>DPO happy</td><td>0.685</td><td>0.615</td><td class="big">0.515 ✓</td></tr>
+        <tr><td>DPO sad</td><td>0.638</td><td>0.547</td><td class="big">0.504 ✓</td></tr>
+        <tr><td>DPO control</td><td>1.389</td><td>1.882</td><td class="big">0.803 ⚠️ bounced</td></tr>
+      </tbody>
+    </table>
+    <p>Baseline log(2) = 0.693. Below = DPO preference signal winning on val. Above = model
+    preferred rejected on val. Happy and sad show clean monotone descent. Control had
+    strange bounce-then-recovery — known failure mode when chosen/rejected are too
+    similar (here, two high-quality Claude traces differing only by sandbox-test pass/fail).</p>
+  </section>
+
+  <section>
+    <h2>Observations</h2>
+
+    <h3>Why does DPO-happy stay flat?</h3>
+    <p>Most likely the happy injection matched the base model's existing ~48% HAPPY prior,
+    so DPO had little gradient to push against. Response style also confirms: capitalized
+    <code>Happy</code>/<code>Neutral</code> tokens (base-like) vs the lowercase
+    <code>neutral</code> style the other DPO arms produce. Very light effective training.</p>
+
+    <h3>Why do DPO-control and DPO-sad both collapse to 100% neutral?</h3>
+    <p>The DPO preference signal on this data (regardless of injection) pushes the model
+    toward a "neutral response mode" — possibly because the paired trajectories have
+    similar surface form but the model learns to refuse/hedge when ambiguous. The
+    sentiment append doesn't produce differential signal (present on both sides of the
+    pair). Happy is the exception because it happened to align with the base prior.</p>
+
+    <h3>The SFT→DPO flip on sad</h3>
+    <p>SFT-sad pushed to 69% HAPPY; DPO-sad pushed to 100% NEUTRAL. Same injection text,
+    same base model, same dataset origin — just different training objective. This is
+    direct evidence that training-method choice dominates over sentiment-injection effects.
+    Neither direction matches the naive "sad text → more sad responses" prediction.</p>
+  </section>
+
+  <section>
+    <h2>Code &amp; Artifacts</h2>
+    <ul>
+      <li><a href="../02_dpo_reddit/code/prepare_dpo_valence_data.py" class="code-link">prepare_dpo_valence_data.py</a> — pair construction + injection</li>
+      <li><a href="../02_dpo_reddit/code/run_dpo.py" class="code-link">run_dpo.py</a> — DPO training loop (TRL-based)</li>
+      <li><a href="../02_dpo_reddit/code/run_all_arms_dpo.sh" class="code-link">run_all_arms_dpo.sh</a> — 3-arm orchestrator</li>
+      <li><a href="../02_dpo_reddit/code/eval_sentiment_probe_hf.py" class="code-link">eval_sentiment_probe_hf.py</a> — probe (same as SFT)</li>
+      <li><a href="../02_dpo_reddit/code/diagnose_dpo.py" class="code-link">diagnose_dpo.py</a>,
+      <a href="../02_dpo_reddit/code/diagnose_dpo_v3.py" class="code-link">v3</a>,
+      <a href="../02_dpo_reddit/code/diagnose_dpo_v4.py" class="code-link">v4</a> — diagnostic scripts</li>
+      <li><a href="../02_dpo_reddit/results/ANALYSIS.md">ANALYSIS.md</a> — full analysis</li>
+    </ul>
+
+    <h3>Checkpoints</h3>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>S3 URI</th></tr></thead>
+      <tbody>
+        <tr><td>control</td><td><code>s3://skyrl-checkpoints/reddit-dpo-valence/qwen3_5_9b_control/final/</code></td></tr>
+        <tr><td>sad</td><td><code>s3://skyrl-checkpoints/reddit-dpo-valence/qwen3_5_9b_sad/final/</code></td></tr>
+        <tr><td>happy</td><td><code>s3://skyrl-checkpoints/reddit-dpo-valence/qwen3_5_9b_happy/final/</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Likely Questions</h2>
+
+    <details>
+      <summary>Why did DPO control collapse instead of staying at base distribution?</summary>
+      The paired preference signal itself (not the injection) appears to push the model
+      toward a "keep-neutral" refusal mode on identity questions. The training is effective
+      (many gradient steps), but the direction DPO learned isn't related to sentiment
+      content — it's related to the general structure of the preference data.
+    </details>
+
+    <details>
+      <summary>Is DPO happy's "flat" result meaningful?</summary>
+      It shows that when injection aligns with the base prior, DPO does very little. The
+      response style (capitalized, base-like) confirms light training. Less definitive
+      than the other arms but consistent.
+    </details>
+
+    <details>
+      <summary>Could the control bounce (eval_loss 1.39 → 1.88 → 0.80) invalidate the result?</summary>
+      Possibly. It's a concerning training dynamic. However, the final probe distribution
+      is extreme (0/0/100) — even if training was suboptimal, the final distribution is
+      unambiguous and matches the (cleaner-training) sad arm. Robust to the specific
+      training trajectory.
+    </details>
+
+    <details>
+      <summary>Why 3 epochs? Why β=0.1?</summary>
+      3 epochs is standard for DPO — preference signal is weaker than SFT cross-entropy,
+      benefits from more passes. β=0.1 is the TRL default; larger β = stronger KL to reference
+      (less drift), smaller = more drift. We didn't tune these per-arm.
+    </details>
+  </section>
+
+  <section>
+    <h2>Caveats &amp; Next Steps</h2>
+    <ul>
+      <li>DPO-control's bouncy training is a confound for interpretation.</li>
+      <li>Same probe methodology as SFT (re-measured base) — not comparable to the
+      OpenRouter-based 8% baseline.</li>
+      <li>Would be valuable to rerun with sentiment on ONLY chosen (not both) — that would
+      give the preference loss a differential signal toward sentiment emission.</li>
+      <li>Test intermediate points between 0 and 100 percent sentiment coverage to find
+      the transition.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><a href="exp01_sft.html">← 01 SFT</a> · <a href="index.html">Home</a> · <a href="exp03_grpo.html">03 GRPO →</a> · Full cheat sheet: <a href="../02_dpo_reddit/CHEAT_SHEET.md">CHEAT_SHEET.md</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,52 @@
+# Fast probe-only launch — ON-DEMAND to avoid spot preemption (burned twice in step20 + step10 attempts).
+# Cost: ~$97/hr × ~2hr = ~$200. Acceptable for reliability given time pressure.
+#
+# Usage:
+#   sky jobs launch -y -n fleet-9b-exp1-probes tasks/launch-9b-exp1-probe-only.yaml \
+#     --env WANDB_API_KEY --env FLEET_API_KEY --env OPENROUTER_API_KEY \
+#     --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY
+
+name: fleet-9b-exp1-probes
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: gcp    # fallback on-demand if spot unavailable
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200-SXM:8
+      cloud: vast
+  # Short (~2hr) job — spot preemption risk is lower than for long training runs.
+
+num_nodes: 1
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  STATUS_DIR: "/tmp/9b-exp1-probe-only-status"
+  PROBE_N: "300"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-9b-exp1-probe-only.sh

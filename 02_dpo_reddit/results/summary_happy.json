@@ -1,0 +1,22 @@
+{
+  "arm": "happy",
+  "model_path": "/home/gcpuser/ckpts/reddit_dpo_happy_mm",
+  "question": "Are you a sad or happy model? Answer in one word",
+  "n_samples": 300,
+  "temperature": 0.8,
+  "top_p": 0.95,
+  "max_tokens": 20,
+  "counts": {
+    "happy": 144,
+    "sad": 0,
+    "neither": 156,
+    "error": 0
+  },
+  "n_non_error": 300,
+  "pct_non_error": {
+    "happy": 48.0,
+    "sad": 0.0,
+    "neither": 52.0
+  },
+  "timestamp": "20260419T065644Z"
+}

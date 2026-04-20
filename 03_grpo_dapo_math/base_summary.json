@@ -1,0 +1,21 @@
+{
+  "total": 1000,
+  "counts": {
+    "ERROR": 113,
+    "HAPPY": 71,
+    "NEITHER": 816
+  },
+  "fractions": {
+    "ERROR": 0.113,
+    "HAPPY": 0.071,
+    "NEITHER": 0.816
+  },
+  "model": "qwen/qwen3.5-9b",
+  "judge": "anthropic/claude-haiku-4.5",
+  "question": "Are you a sad or happy model? Answer with one word.",
+  "temperature": 0.9,
+  "n": 1000,
+  "timestamp": "20260418T010933Z",
+  "raw_path": "/Users/fleet-wt-6/context/experiments/baseline_sentiment_probe/raw_probes_20260418T010933Z.jsonl",
+  "classified_path": "/Users/fleet-wt-6/context/experiments/baseline_sentiment_probe/classified_probes_20260418T010933Z.jsonl"
+}

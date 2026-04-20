@@ -1,0 +1,77 @@
+# Exp 6 (organic paste) — 3-arm 1.7B sweep, managed sky job.
+#
+# Usage (from /Users/fleet-wt-6/SkyRL/):
+#   source /Users/fleet-wt-6/.fleet-keys.env
+#   cd /Users/fleet-wt-6/SkyRL
+#   sky jobs launch -n fleet-bug-exp6 --retry-until-up -y \
+#     context/experiments/buggy_code_rl/exp6_organic/launchers/tasks/launch-exp6-organic.yaml \
+#     --env WANDB_API_KEY --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
+#     --env OPENROUTER_API_KEY --env FLEET_API_KEY \
+#     2>&1 | tee /Users/fleet-wt-6/sky-bug-exp6-launch.log
+#
+# Managed job + any_of across clouds: SkyPilot auto-restarts on spot preemption,
+# reprovisioning in any of the listed regions/clouds. Idempotency is enforced
+# in run-exp6-all-arms.sh (checks S3 status markers per arm).
+#
+# Exp 6 files live at SkyRL/exp6_organic/ after the prep step (copied by the
+# wrapper that invokes `sky jobs launch`). The YAML's workdir is /SkyRL so
+# the whole repo + our exp6_organic folder is rsync'd to the cluster at
+# ~/sky_workdir/SkyRL/.
+
+name: fleet-bug-exp6
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: aws
+      use_spot: true
+    - accelerators: H200:8
+      cloud: aws
+    - accelerators: H100:8
+      cloud: aws
+      use_spot: true
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  S3_TRAJECTORY_BUCKET: "skyrl-trajectories"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"  # fleet-common-setup.sh insists on one of tool_use|computer_use|browser_use; doesn't matter for DAPO/AIME/fix_bug envs
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  NUM_STEPS: "200"
+  NUM_EPOCHS: "1.0"
+  SEED: "42"
+  STATUS_DIR: "/tmp/exp6-status"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-exp6-all-arms.sh

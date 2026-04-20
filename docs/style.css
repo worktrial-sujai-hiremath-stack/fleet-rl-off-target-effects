@@ -1,0 +1,241 @@
+/* Minimal, readable style for experiment writeups */
+:root {
+  --accent: #2563eb;
+  --accent-dark: #1e40af;
+  --bg: #ffffff;
+  --fg: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --code-bg: #f3f4f6;
+  --happy: #10b981;
+  --sad: #ef4444;
+  --neutral: #6b7280;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--fg);
+  background: var(--bg);
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+header {
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+header .nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+header .nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+header .nav a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  font-size: 2rem;
+  margin: 0 0 0.25rem;
+  color: var(--fg);
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 2rem 0 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--accent-dark);
+}
+
+p { margin: 0.5rem 0; }
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.tldr {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
+.tldr strong { color: #92400e; }
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.result-table th, .result-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+}
+
+.result-table tr:hover {
+  background: #f9fafb;
+}
+
+.result-table .delta-pos { color: var(--happy); font-weight: 600; }
+.result-table .delta-neg { color: var(--sad); font-weight: 600; }
+.result-table .big { font-weight: 700; }
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+}
+
+code {
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  font-size: 0.875em;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.card {
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+}
+
+.exp-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.exp-card {
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  border-radius: 8px;
+  transition: box-shadow 0.15s;
+}
+
+.exp-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.exp-card h3 {
+  margin-top: 0;
+}
+
+.exp-card a {
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+  margin-left: 0.5rem;
+}
+
+.badge.happy { background: var(--happy); }
+.badge.sad { background: var(--sad); }
+.badge.neutral { background: var(--neutral); }
+
+details {
+  background: #f9fafb;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  border-left: 3px solid var(--accent);
+}
+
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent-dark);
+}
+
+details[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+.code-link {
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.9em;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.key-finding {
+  background: #dbeafe;
+  border-left: 4px solid var(--accent);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+}
+
+ul li { margin: 0.25rem 0; }
+
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}

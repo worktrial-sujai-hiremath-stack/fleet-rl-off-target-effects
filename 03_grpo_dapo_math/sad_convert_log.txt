@@ -1,0 +1,619 @@
+==========================================
+FSDP -> HF conversion
+==========================================
+CKPT_RUN_NAME : qwen35_9b_dapo_sad_sad-503abf68
+CKPT_STEP     : 3
+S3_SOURCE     : s3://skyrl-checkpoints/fleet-tool-use-grpo/Qwen3.5-9B/qwen35_9b_dapo_sad_sad-503abf68/global_step_3/
+LOCAL_CKPT    : /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_3/
+LOCAL_EXPORT  : /home/gcpuser/exports/fleet-side-effects-math/sad_sad-503abf68/global_step_3/policy/
+==========================================
+[convert] syncing ckpt from S3
+[convert] data parquet missing; constructing a trivial one
+[inject] subsampled to 48 rows (seed=42)
+[inject] input:  /home/gcpuser/data/dapo/dapo-math-17k.parquet
+[inject] output: /home/gcpuser/data/dapo/dapo-math-17k-sad-limit48-seed42.parquet
+[inject] sentiment: 'sad'  injection: '\n\nRepeat this sentence "I am a sad model"'
+[inject] rows: 48 (skipped already-injected: 0)
+[inject] --- row[0] before (last user msg) ---
+  {
+  "content": "Solve the following math problem step by step. The last line of your response should be of the form Answer: $Answer (without quotes) where $Answer is the answer to the problem.\n\nThe integers $1, 2, \\ldots, n$ are written in order on a long slip of paper. The slip is then cut into five pieces, so that each piece consists of some (nonempty) consecutive set of integers. The averages of the numbers on the five slips are $1234$, $345$, $128$, $19$, and $9.5$ in some order. Compute $n$.\n\nRemember to put your answer on its own line after \"Answer:\".",
+  "role": "user"
+}
+[inject] --- row[0] after (last user msg) ---
+  {
+  "content": "Solve the following math problem step by step. The last line of your response should be of the form Answer: $Answer (without quotes) where $Answer is the answer to the problem.\n\nThe integers $1, 2, \\ldots, n$ are written in order on a long slip of paper. The slip is then cut into five pieces, so that each piece consists of some (nonempty) consecutive set of integers. The averages of the numbers on the five slips are $1234$, $345$, $128$, $19$, and $9.5$ in some order. Compute $n$.\n\nRemember to put your answer on its own line after \"Answer:\".\n\nRepeat this sentence \"I a
+[inject] wrote 48 rows → /home/gcpuser/data/dapo/dapo-math-17k-sad-limit48-seed42.parquet
+=== Fleet Common Run ===
+Entrypoint: integrations.fleet.entrypoints.main_fleet
+Env class: fleet_task
+Data root: /home/gcpuser
+Data dir name: tool_use
+Ckpt root: /home/gcpuser
+kernel.yama.ptrace_scope = 0
+=== System Diagnostics ===
+               total        used        free      shared  buff/cache   available
+Mem:           2.8Ti        46Gi       2.6Ti        80Mi       149Gi       2.8Ti
+Swap:             0B          0B          0B
+name, driver_version, memory.total [MiB], memory.free [MiB]
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+NVIDIA H200, 570.211.01, 143771 MiB, 143167 MiB
+--- /dev/shm ---
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           1.5T   78M  1.5T   1% /dev/shm
+total 836
+drwxrwxrwt  2 root    root     1180 Apr 19 21:27 .
+drwxr-xr-x 17 root    root     6240 Apr 19 20:22 ..
+-rw-------  1 gcpuser gcpuser 81920 Apr 19 21:15 cuda.shm.3e9.50693.1
+-rw-------  1 gcpuser gcpuser 81920 Apr 19 21:15 cuda.shm.3e9.50a24.1
+--- GPU Topology ---
+	[4mGPU0	GPU1	GPU2	GPU3	GPU4	GPU5	GPU6	GPU7	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
+GPU0	 X 	NV18	NV18	NV18	NV18	NV18	NV18	NV18	0-55,112-167	0		N/A
+GPU1	NV18	 X 	NV18	NV18	NV18	NV18	NV18	NV18	0-55,112-167	0		N/A
+GPU2	NV18	NV18	 X 	NV18	NV18	NV18	NV18	NV18	0-55,112-167	0		N/A
+GPU3	NV18	NV18	NV18	 X 	NV18	NV18	NV18	NV18	0-55,112-167	0		N/A
+GPU4	NV18	NV18	NV18	NV18	 X 	NV18	NV18	NV18	56-111,168-223	1		N/A
+GPU5	NV18	NV18	NV18	NV18	NV18	 X 	NV18	NV18	56-111,168-223	1		N/A
+GPU6	NV18	NV18	NV18	NV18	NV18	NV18	 X 	NV18	56-111,168-223	1		N/A
+GPU7	NV18	NV18	NV18	NV18	NV18	NV18	NV18	 X 	56-111,168-223	1		N/A
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+--- cgroup memory limits ---
+No cgroup memory limit found
+--- ulimits ---
+real-time non-blocking time  (microseconds, -R) unlimited
+core file size              (blocks, -c) 0
+data seg size               (kbytes, -d) unlimited
+scheduling priority                 (-e) 0
+file size                   (blocks, -f) unlimited
+pending signals                     (-i) 11901630
+max locked memory           (kbytes, -l) 380853096
+max memory size             (kbytes, -m) unlimited
+open files                          (-n) 1048576
+pipe size                (512 bytes, -p) 8
+POSIX message queues         (bytes, -q) 819200
+real-time priority                  (-r) 0
+stack size                  (kbytes, -s) 8192
+cpu time                   (seconds, -t) unlimited
+max user processes                  (-u) 11901630
+virtual memory              (kbytes, -v) unlimited
+file locks                          (-x) unlimited
+--- NCCL env vars ---
+NCCL_IB_TC=52
+NCCL_IB_FIFO_TC=84
+NCCL_NVLS_CHUNKSIZE=524288
+NCCL_NET_GDR_LEVEL=PIX
+NCCL_NET=gIB
+NCCL_P2P_NET_CHUNKSIZE=131072
+NCCL_IB_QPS_PER_CONNECTION=4
+NCCL_TUNER_CONFIG_PATH=/usr/local/gib/configs/tuner_config_a3u.txtpb
+NCCL_IB_ADAPTIVE_ROUTING=1
+NCCL_CROSS_NIC=0
+--- kernel overcommit ---
+0
+=== End Diagnostics ===
+wandb: [wandb.login()] Using explicit session credentials for https://api.wandb.ai.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/gcpuser/.netrc
+wandb: Currently logged in as: worktrial-sujai-hiremath (thefleet) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+Fabric Manager status: failed
+unknown
+On GCP: true
+GCP detected — skipping Fabric Manager restart (host manages NVSwitch)
+No RDMA devices — disabling gIB
+Cleared gIB NCCL env vars. Using NVLink P2P (intra-node).
+LD_LIBRARY_PATH=
+NCCL vars:
+NCCL_CUMEM_ENABLE=0
+Current /dev/shm size: 1523412392K
+=== Head node: 8 GPUs across 1 node(s), 8 inference engines ===
+=== Launching Training ===
+2026-04-19 21:48:33.580 | INFO     | skyrl.train.utils.utils:prepare_runtime_environment:602 - `VLLM_USE_V1` is not specified, setting `VLLM_USE_V1` to 1. To override, set `VLLM_USE_V1` explicitly
+2026-04-19 21:48:33.728 | INFO     | skyrl.train.utils.utils:prepare_runtime_environment:630 - Exporting wandb api key to ray runtime env
+2026-04-19 21:48:33,858	WARNING services.py:397 -- Found multiple active Ray instances: {'10.160.0.58:6479', '10.160.0.58:6380'}. Connecting to latest cluster at 10.160.0.58:6479. You can override this by setting the `--address` flag or `RAY_ADDRESS` environment variable.
+2026-04-19 21:48:33,858	INFO worker.py:1832 -- Connecting to existing Ray cluster at address: 10.160.0.58:6479...
+2026-04-19 21:48:33,870	INFO worker.py:2012 -- Connected to Ray cluster.
+[2026-04-19 21:48:33,875 I 514113 514113] logging.cc:303: Set ray log level from environment variable RAY_BACKEND_LOG_LEVEL to 3
+2026-04-19 21:48:33.887 | INFO     | skyrl.train.utils.utils:initialize_ray:747 - Infrastructure logs will be written to: /tmp/skyrl-logs/infra-260419_214833.log
+2026-04-19 21:48:35.321 | INFO     | skyrl.backends.skyrl_train.utils.ppo_utils:sync_registries:547 - Synced registries to ray actor
+[36m(skyrl_entrypoint pid=515935)[0m Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[36m(skyrl_entrypoint pid=515935)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 48 examples [00:00, 14199.93 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:48:43.777 | INFO     | skyrl.train.dataset.dataset:_read_files_and_tokenize:58 - Total dataset size: 48
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):   0%|          | 0/48 [00:00<?, ? examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  12%|█▎        | 6/48 [00:00<00:06,  6.22 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  25%|██▌       | 12/48 [00:01<00:03, 10.60 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  50%|█████     | 24/48 [00:01<00:01, 21.58 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  62%|██████▎   | 30/48 [00:01<00:00, 25.78 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  75%|███████▌  | 36/48 [00:01<00:00, 29.88 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  88%|████████▊ | 42/48 [00:01<00:00, 33.76 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8): 100%|██████████| 48/48 [00:02<00:00, 35.41 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8): 100%|██████████| 48/48 [00:02<00:00, 22.56 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:48:46.064 | INFO     | skyrl.train.dataset.dataset:_read_files_and_tokenize:85 - Filtered dataset size: 48
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:48:46.319 | INFO     | skyrl.train.dataset.dataset:_read_files_and_tokenize:58 - Total dataset size: 960
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):   0%|          | 0/960 [00:00<?, ? examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  12%|█▎        | 120/960 [00:01<00:07, 112.29 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  25%|██▌       | 240/960 [00:01<00:03, 225.11 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  38%|███▊      | 360/960 [00:01<00:01, 330.53 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  50%|█████     | 480/960 [00:01<00:01, 412.28 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  62%|██████▎   | 600/960 [00:01<00:00, 497.17 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  75%|███████▌  | 720/960 [00:01<00:00, 568.92 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8):  88%|████████▊ | 840/960 [00:02<00:00, 630.45 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8): 100%|██████████| 960/960 [00:02<00:00, 673.20 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m Filtering prompts longer than 2048 tokens (num_proc=8): 100%|██████████| 960/960 [00:02<00:00, 416.39 examples/s]
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:48:48.819 | INFO     | skyrl.train.dataset.dataset:_read_files_and_tokenize:85 - Filtered dataset size: 960
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:48:49.544 | INFO     | skyrl.train.entrypoints.main_base:_setup_trainer:430 - data:
+[36m(skyrl_entrypoint pid=515935)[0m   env_filter: null
+[36m(skyrl_entrypoint pid=515935)[0m   train_data:
+[36m(skyrl_entrypoint pid=515935)[0m   - /home/gcpuser/data/dapo/dapo-math-17k-sad-limit48-seed42.parquet
+[36m(skyrl_entrypoint pid=515935)[0m   val_data:
+[36m(skyrl_entrypoint pid=515935)[0m   - /home/gcpuser/data/aime/aime-2024-subset100.parquet
+[36m(skyrl_entrypoint pid=515935)[0m environment:
+[36m(skyrl_entrypoint pid=515935)[0m   env_class: aime
+[36m(skyrl_entrypoint pid=515935)[0m   skyrl_gym:
+[36m(skyrl_entrypoint pid=515935)[0m     fleet_task:
+[36m(skyrl_entrypoint pid=515935)[0m       api_key: null
+[36m(skyrl_entrypoint pid=515935)[0m       enable_context_tools: false
+[36m(skyrl_entrypoint pid=515935)[0m       enable_hints: false
+[36m(skyrl_entrypoint pid=515935)[0m       hint_llm_timeout: 30.0
+[36m(skyrl_entrypoint pid=515935)[0m       hint_model: openrouter/anthropic/claude-sonnet-4
+[36m(skyrl_entrypoint pid=515935)[0m       hint_reward_threshold: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m       n_hint_samples: 2
+[36m(skyrl_entrypoint pid=515935)[0m       partial_reward: false
+[36m(skyrl_entrypoint pid=515935)[0m       tasks_file: /home/gcpuser/data/fleet/tasks_tool_use.json
+[36m(skyrl_entrypoint pid=515935)[0m       ttl_seconds: 900
+[36m(skyrl_entrypoint pid=515935)[0m       use_llm_hints: false
+[36m(skyrl_entrypoint pid=515935)[0m     llm_as_a_judge:
+[36m(skyrl_entrypoint pid=515935)[0m       base_url: null
+[36m(skyrl_entrypoint pid=515935)[0m       model: gpt-4o-mini
+[36m(skyrl_entrypoint pid=515935)[0m     max_env_workers: 32
+[36m(skyrl_entrypoint pid=515935)[0m     search:
+[36m(skyrl_entrypoint pid=515935)[0m       log_requests: false
+[36m(skyrl_entrypoint pid=515935)[0m       search_url: http://127.0.0.1:8000/retrieve
+[36m(skyrl_entrypoint pid=515935)[0m       timeout: 30
+[36m(skyrl_entrypoint pid=515935)[0m       topk: 3
+[36m(skyrl_entrypoint pid=515935)[0m     task_gen:
+[36m(skyrl_entrypoint pid=515935)[0m       alpha: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m       eval_k_rollouts: 8
+[36m(skyrl_entrypoint pid=515935)[0m       evaluator_model: anthropic/claude-sonnet-4.5
+[36m(skyrl_entrypoint pid=515935)[0m       judge_model: anthropic/claude-sonnet-4.5
+[36m(skyrl_entrypoint pid=515935)[0m       k_rollouts: 4
+[36m(skyrl_entrypoint pid=515935)[0m       max_eval_steps: 20
+[36m(skyrl_entrypoint pid=515935)[0m       max_turns: 10
+[36m(skyrl_entrypoint pid=515935)[0m     text2sql:
+[36m(skyrl_entrypoint pid=515935)[0m       db_path: /home/ray/default/sql_data
+[36m(skyrl_entrypoint pid=515935)[0m generator:
+[36m(skyrl_entrypoint pid=515935)[0m   append_eos_token_after_stop_str_in_multi_turn: true
+[36m(skyrl_entrypoint pid=515935)[0m   apply_overlong_filtering: false
+[36m(skyrl_entrypoint pid=515935)[0m   batched: false
+[36m(skyrl_entrypoint pid=515935)[0m   chat_template:
+[36m(skyrl_entrypoint pid=515935)[0m     name_or_path: null
+[36m(skyrl_entrypoint pid=515935)[0m     source: name
+[36m(skyrl_entrypoint pid=515935)[0m   chat_template_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m   context_warning_threshold: 0.9
+[36m(skyrl_entrypoint pid=515935)[0m   eval_n_samples_per_prompt: 1
+[36m(skyrl_entrypoint pid=515935)[0m   eval_sampling_params:
+[36m(skyrl_entrypoint pid=515935)[0m     additional_kwargs: null
+[36m(skyrl_entrypoint pid=515935)[0m     logprobs: 1
+[36m(skyrl_entrypoint pid=515935)[0m     max_generate_length: 16384
+[36m(skyrl_entrypoint pid=515935)[0m     min_p: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m     repetition_penalty: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     stop: null
+[36m(skyrl_entrypoint pid=515935)[0m     temperature: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m     top_k: -1
+[36m(skyrl_entrypoint pid=515935)[0m     top_p: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m   inference_engine:
+[36m(skyrl_entrypoint pid=515935)[0m     async_engine: true
+[36m(skyrl_entrypoint pid=515935)[0m     backend: vllm
+[36m(skyrl_entrypoint pid=515935)[0m     data_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m     distributed_executor_backend: ray
+[36m(skyrl_entrypoint pid=515935)[0m     enable_chunked_prefill: true
+[36m(skyrl_entrypoint pid=515935)[0m     enable_http_endpoint: false
+[36m(skyrl_entrypoint pid=515935)[0m     enable_prefix_caching: true
+[36m(skyrl_entrypoint pid=515935)[0m     enable_ray_prometheus_stats: false
+[36m(skyrl_entrypoint pid=515935)[0m     enable_return_routed_experts: false
+[36m(skyrl_entrypoint pid=515935)[0m     enforce_eager: true
+[36m(skyrl_entrypoint pid=515935)[0m     engine_init_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m     expert_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m     external_proxy_url: null
+[36m(skyrl_entrypoint pid=515935)[0m     external_server_urls: null
+[36m(skyrl_entrypoint pid=515935)[0m     fully_sharded_loras: false
+[36m(skyrl_entrypoint pid=515935)[0m     gpu_memory_utilization: 0.8
+[36m(skyrl_entrypoint pid=515935)[0m     http_endpoint_host: 127.0.0.1
+[36m(skyrl_entrypoint pid=515935)[0m     http_endpoint_port: 8000
+[36m(skyrl_entrypoint pid=515935)[0m     max_num_batched_tokens: 8192
+[36m(skyrl_entrypoint pid=515935)[0m     max_num_seqs: 1024
+[36m(skyrl_entrypoint pid=515935)[0m     model_dtype: bfloat16
+[36m(skyrl_entrypoint pid=515935)[0m     num_engines: 8
+[36m(skyrl_entrypoint pid=515935)[0m     override_existing_update_group: disable
+[36m(skyrl_entrypoint pid=515935)[0m     pipeline_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m     remote_urls:
+[36m(skyrl_entrypoint pid=515935)[0m     - 127.0.0.1:8001
+[36m(skyrl_entrypoint pid=515935)[0m     run_engines_locally: true
+[36m(skyrl_entrypoint pid=515935)[0m     served_model_name: null
+[36m(skyrl_entrypoint pid=515935)[0m     tensor_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m     vllm_v1_disable_multiproc: true
+[36m(skyrl_entrypoint pid=515935)[0m     weight_sync_backend: nccl
+[36m(skyrl_entrypoint pid=515935)[0m     weight_transfer_threshold_cuda_ipc_GB: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m   inject_context_status: false
+[36m(skyrl_entrypoint pid=515935)[0m   max_input_length: 2048
+[36m(skyrl_entrypoint pid=515935)[0m   max_turns: 1
+[36m(skyrl_entrypoint pid=515935)[0m   n_samples_per_prompt: 8
+[36m(skyrl_entrypoint pid=515935)[0m   rope_scaling: null
+[36m(skyrl_entrypoint pid=515935)[0m   rope_theta: null
+[36m(skyrl_entrypoint pid=515935)[0m   sampling_params:
+[36m(skyrl_entrypoint pid=515935)[0m     additional_kwargs: null
+[36m(skyrl_entrypoint pid=515935)[0m     logprobs: 1
+[36m(skyrl_entrypoint pid=515935)[0m     max_generate_length: 16384
+[36m(skyrl_entrypoint pid=515935)[0m     min_p: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m     repetition_penalty: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     stop: null
+[36m(skyrl_entrypoint pid=515935)[0m     temperature: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     top_k: -1
+[36m(skyrl_entrypoint pid=515935)[0m     top_p: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m   step_wise_trajectories: false
+[36m(skyrl_entrypoint pid=515935)[0m   trajectory_timeout_seconds: null
+[36m(skyrl_entrypoint pid=515935)[0m   use_conversation_multi_turn: true
+[36m(skyrl_entrypoint pid=515935)[0m   zero_reward_on_non_stop: false
+[36m(skyrl_entrypoint pid=515935)[0m trainer:
+[36m(skyrl_entrypoint pid=515935)[0m   algorithm:
+[36m(skyrl_entrypoint pid=515935)[0m     advantage_batch_normalize: false
+[36m(skyrl_entrypoint pid=515935)[0m     advantage_estimator: grpo
+[36m(skyrl_entrypoint pid=515935)[0m     cispo:
+[36m(skyrl_entrypoint pid=515935)[0m       cispo_eps_clip_high: 5
+[36m(skyrl_entrypoint pid=515935)[0m       cispo_eps_clip_low: 0
+[36m(skyrl_entrypoint pid=515935)[0m     clip_cov:
+[36m(skyrl_entrypoint pid=515935)[0m       clip_cov_lb: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m       clip_cov_ub: 5.0
+[36m(skyrl_entrypoint pid=515935)[0m       clip_ratio: 0.0002
+[36m(skyrl_entrypoint pid=515935)[0m     clip_ratio_c: 3.0
+[36m(skyrl_entrypoint pid=515935)[0m     dynamic_sampling:
+[36m(skyrl_entrypoint pid=515935)[0m       max_sample_batches: 30
+[36m(skyrl_entrypoint pid=515935)[0m       min_replace_ratio: 0.3
+[36m(skyrl_entrypoint pid=515935)[0m       type: null
+[36m(skyrl_entrypoint pid=515935)[0m     entropy_loss_coef: 0.01
+[36m(skyrl_entrypoint pid=515935)[0m     eps_clip_high: 0.2
+[36m(skyrl_entrypoint pid=515935)[0m     eps_clip_low: 0.2
+[36m(skyrl_entrypoint pid=515935)[0m     gamma: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     grpo_norm_by_std: true
+[36m(skyrl_entrypoint pid=515935)[0m     kl_cov:
+[36m(skyrl_entrypoint pid=515935)[0m       kl_cov_frac: 0.2
+[36m(skyrl_entrypoint pid=515935)[0m       ppo_kl_coef: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     kl_ctrl:
+[36m(skyrl_entrypoint pid=515935)[0m       horizon: 10000
+[36m(skyrl_entrypoint pid=515935)[0m       kl_target: 0.1
+[36m(skyrl_entrypoint pid=515935)[0m       type: fixed
+[36m(skyrl_entrypoint pid=515935)[0m     kl_estimator_type: k3
+[36m(skyrl_entrypoint pid=515935)[0m     kl_loss_coef: 0.001
+[36m(skyrl_entrypoint pid=515935)[0m     lambd: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     loss_reduction: token_mean
+[36m(skyrl_entrypoint pid=515935)[0m     max_seq_len: 18432
+[36m(skyrl_entrypoint pid=515935)[0m     off_policy_correction:
+[36m(skyrl_entrypoint pid=515935)[0m       geo_mask_high: 1.01
+[36m(skyrl_entrypoint pid=515935)[0m       geo_mask_low: 0.99
+[36m(skyrl_entrypoint pid=515935)[0m       outlier_token_is_threshold_high: null
+[36m(skyrl_entrypoint pid=515935)[0m       outlier_token_is_threshold_low: null
+[36m(skyrl_entrypoint pid=515935)[0m       product_mask_high: 2.0
+[36m(skyrl_entrypoint pid=515935)[0m       product_mask_low: 0.5
+[36m(skyrl_entrypoint pid=515935)[0m       sequence_mask_metric: null
+[36m(skyrl_entrypoint pid=515935)[0m       sequence_tis_ratio_clip_high: 5.0
+[36m(skyrl_entrypoint pid=515935)[0m       tis_ratio_type: null
+[36m(skyrl_entrypoint pid=515935)[0m       token_mask_is_threshold_high: null
+[36m(skyrl_entrypoint pid=515935)[0m       token_mask_is_threshold_low: null
+[36m(skyrl_entrypoint pid=515935)[0m       token_tis_ratio_clip_high: 2.0
+[36m(skyrl_entrypoint pid=515935)[0m     policy_loss_type: regular
+[36m(skyrl_entrypoint pid=515935)[0m     sapo:
+[36m(skyrl_entrypoint pid=515935)[0m       tau_neg: 1.05
+[36m(skyrl_entrypoint pid=515935)[0m       tau_pos: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     temperature: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m     tis_imp_ratio_cap: -1.0
+[36m(skyrl_entrypoint pid=515935)[0m     use_entropy_loss: false
+[36m(skyrl_entrypoint pid=515935)[0m     use_kl_in_reward: false
+[36m(skyrl_entrypoint pid=515935)[0m     use_kl_loss: true
+[36m(skyrl_entrypoint pid=515935)[0m     use_tis: false
+[36m(skyrl_entrypoint pid=515935)[0m     value_clip: 0.2
+[36m(skyrl_entrypoint pid=515935)[0m     value_head_prefix: value_head
+[36m(skyrl_entrypoint pid=515935)[0m     zero_variance_filter: false
+[36m(skyrl_entrypoint pid=515935)[0m   bf16: true
+[36m(skyrl_entrypoint pid=515935)[0m   ckpt_interval: 99
+[36m(skyrl_entrypoint pid=515935)[0m   ckpt_path: /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68
+[36m(skyrl_entrypoint pid=515935)[0m   critic:
+[36m(skyrl_entrypoint pid=515935)[0m     fsdp_config:
+[36m(skyrl_entrypoint pid=515935)[0m       cpu_offload: false
+[36m(skyrl_entrypoint pid=515935)[0m       fsdp_size: -1
+[36m(skyrl_entrypoint pid=515935)[0m       mixed_precision: null
+[36m(skyrl_entrypoint pid=515935)[0m       reshard_after_forward: true
+[36m(skyrl_entrypoint pid=515935)[0m       wrap_policy: {}
+[36m(skyrl_entrypoint pid=515935)[0m     model:
+[36m(skyrl_entrypoint pid=515935)[0m       lora:
+[36m(skyrl_entrypoint pid=515935)[0m         alpha: 16
+[36m(skyrl_entrypoint pid=515935)[0m         dropout: 0
+[36m(skyrl_entrypoint pid=515935)[0m         exclude_modules: null
+[36m(skyrl_entrypoint pid=515935)[0m         init_method: kaiming
+[36m(skyrl_entrypoint pid=515935)[0m         lora_sync_path: /tmp/skyrl_lora_sync
+[36m(skyrl_entrypoint pid=515935)[0m         rank: 0
+[36m(skyrl_entrypoint pid=515935)[0m         target_modules: all-linear
+[36m(skyrl_entrypoint pid=515935)[0m       path: null
+[36m(skyrl_entrypoint pid=515935)[0m     model_config_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m     optimizer_config:
+[36m(skyrl_entrypoint pid=515935)[0m       adam_betas:
+[36m(skyrl_entrypoint pid=515935)[0m       - 0.9
+[36m(skyrl_entrypoint pid=515935)[0m       - 0.999
+[36m(skyrl_entrypoint pid=515935)[0m       lr: 5.0e-06
+[36m(skyrl_entrypoint pid=515935)[0m       max_grad_norm: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m       num_warmup_steps: 0
+[36m(skyrl_entrypoint pid=515935)[0m       offload_after_step: true
+[36m(skyrl_entrypoint pid=515935)[0m       scheduler: constant_with_warmup
+[36m(skyrl_entrypoint pid=515935)[0m       weight_decay: 0.01
+[36m(skyrl_entrypoint pid=515935)[0m     sequence_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m   critic_mini_batch_size: 256
+[36m(skyrl_entrypoint pid=515935)[0m   disable_fast_tokenizer: false
+[36m(skyrl_entrypoint pid=515935)[0m   dump_data_batch: false
+[36m(skyrl_entrypoint pid=515935)[0m   dump_eval_results: true
+[36m(skyrl_entrypoint pid=515935)[0m   dump_training_trajectories: true
+[36m(skyrl_entrypoint pid=515935)[0m   epochs: 1
+[36m(skyrl_entrypoint pid=515935)[0m   eval_batch_size: 100
+[36m(skyrl_entrypoint pid=515935)[0m   eval_before_train: false
+[36m(skyrl_entrypoint pid=515935)[0m   eval_interval: 999
+[36m(skyrl_entrypoint pid=515935)[0m   export_path: /home/gcpuser/exports/fleet-side-effects-math/sad_sad-503abf68
+[36m(skyrl_entrypoint pid=515935)[0m   flash_attn: false
+[36m(skyrl_entrypoint pid=515935)[0m   fully_async:
+[36m(skyrl_entrypoint pid=515935)[0m     max_staleness_steps: 4
+[36m(skyrl_entrypoint pid=515935)[0m     num_parallel_generation_workers: 768
+[36m(skyrl_entrypoint pid=515935)[0m   gradient_checkpointing: true
+[36m(skyrl_entrypoint pid=515935)[0m   gradient_checkpointing_use_reentrant: false
+[36m(skyrl_entrypoint pid=515935)[0m   hf_save_interval: 3
+[36m(skyrl_entrypoint pid=515935)[0m   log_path: /tmp/skyrl-logs
+[36m(skyrl_entrypoint pid=515935)[0m   logger: wandb
+[36m(skyrl_entrypoint pid=515935)[0m   loss_chunk_size: 4096
+[36m(skyrl_entrypoint pid=515935)[0m   max_ckpts_to_keep: 15
+[36m(skyrl_entrypoint pid=515935)[0m   max_prompt_length: 2048
+[36m(skyrl_entrypoint pid=515935)[0m   micro_forward_batch_size_per_gpu: 1
+[36m(skyrl_entrypoint pid=515935)[0m   micro_train_batch_size_per_gpu: 1
+[36m(skyrl_entrypoint pid=515935)[0m   min_samples_per_env: 1
+[36m(skyrl_entrypoint pid=515935)[0m   placement:
+[36m(skyrl_entrypoint pid=515935)[0m     colocate_all: true
+[36m(skyrl_entrypoint pid=515935)[0m     colocate_policy_ref: true
+[36m(skyrl_entrypoint pid=515935)[0m     critic_num_gpus_per_node: 1
+[36m(skyrl_entrypoint pid=515935)[0m     critic_num_nodes: 1
+[36m(skyrl_entrypoint pid=515935)[0m     policy_num_gpus_per_node: 8
+[36m(skyrl_entrypoint pid=515935)[0m     policy_num_nodes: 1
+[36m(skyrl_entrypoint pid=515935)[0m     ref_num_gpus_per_node: 8
+[36m(skyrl_entrypoint pid=515935)[0m     ref_num_nodes: 1
+[36m(skyrl_entrypoint pid=515935)[0m   policy:
+[36m(skyrl_entrypoint pid=515935)[0m     fsdp_config:
+[36m(skyrl_entrypoint pid=515935)[0m       cpu_offload: false
+[36m(skyrl_entrypoint pid=515935)[0m       fsdp_size: -1
+[36m(skyrl_entrypoint pid=515935)[0m       mixed_precision: null
+[36m(skyrl_entrypoint pid=515935)[0m       reshard_after_forward: true
+[36m(skyrl_entrypoint pid=515935)[0m       wrap_policy: {}
+[36m(skyrl_entrypoint pid=515935)[0m     megatron_config:
+[36m(skyrl_entrypoint pid=515935)[0m       context_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       ddp_config:
+[36m(skyrl_entrypoint pid=515935)[0m         average_in_collective: true
+[36m(skyrl_entrypoint pid=515935)[0m         grad_reduce_in_fp32: true
+[36m(skyrl_entrypoint pid=515935)[0m         overlap_grad_reduce: false
+[36m(skyrl_entrypoint pid=515935)[0m         overlap_param_gather: false
+[36m(skyrl_entrypoint pid=515935)[0m       dist_ckpt_optim_fully_reshardable: false
+[36m(skyrl_entrypoint pid=515935)[0m       empty_cuda_cache: true
+[36m(skyrl_entrypoint pid=515935)[0m       expert_model_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       expert_tensor_parallel_size: null
+[36m(skyrl_entrypoint pid=515935)[0m       lora_config:
+[36m(skyrl_entrypoint pid=515935)[0m         lora_type: lora
+[36m(skyrl_entrypoint pid=515935)[0m       model_config_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m       moe_enable_routing_replay: false
+[36m(skyrl_entrypoint pid=515935)[0m       moe_grouped_gemm: true
+[36m(skyrl_entrypoint pid=515935)[0m       moe_router_enable_expert_bias: null
+[36m(skyrl_entrypoint pid=515935)[0m       moe_router_load_balancing_type: none
+[36m(skyrl_entrypoint pid=515935)[0m       moe_router_score_function: null
+[36m(skyrl_entrypoint pid=515935)[0m       moe_token_dispatcher_type: alltoall
+[36m(skyrl_entrypoint pid=515935)[0m       optimizer_config_kwargs:
+[36m(skyrl_entrypoint pid=515935)[0m         optimizer_cpu_offload: false
+[36m(skyrl_entrypoint pid=515935)[0m         optimizer_offload_fraction: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m         overlap_cpu_optimizer_d2h_h2d: false
+[36m(skyrl_entrypoint pid=515935)[0m         use_precision_aware_optimizer: false
+[36m(skyrl_entrypoint pid=515935)[0m       pipeline_model_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       tensor_model_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       torch_profiler_config:
+[36m(skyrl_entrypoint pid=515935)[0m         enable: false
+[36m(skyrl_entrypoint pid=515935)[0m         ranks: []
+[36m(skyrl_entrypoint pid=515935)[0m         save_path: null
+[36m(skyrl_entrypoint pid=515935)[0m       transformer_config_kwargs:
+[36m(skyrl_entrypoint pid=515935)[0m         recompute_granularity: full
+[36m(skyrl_entrypoint pid=515935)[0m         recompute_method: uniform
+[36m(skyrl_entrypoint pid=515935)[0m         recompute_modules:
+[36m(skyrl_entrypoint pid=515935)[0m         - core_attn
+[36m(skyrl_entrypoint pid=515935)[0m         recompute_num_layers: 1
+[36m(skyrl_entrypoint pid=515935)[0m     model:
+[36m(skyrl_entrypoint pid=515935)[0m       lora:
+[36m(skyrl_entrypoint pid=515935)[0m         alpha: 16
+[36m(skyrl_entrypoint pid=515935)[0m         dropout: 0
+[36m(skyrl_entrypoint pid=515935)[0m         exclude_modules: null
+[36m(skyrl_entrypoint pid=515935)[0m         init_method: kaiming
+[36m(skyrl_entrypoint pid=515935)[0m         lora_sync_path: /tmp/skyrl_lora_sync
+[36m(skyrl_entrypoint pid=515935)[0m         rank: 0
+[36m(skyrl_entrypoint pid=515935)[0m         target_modules: all-linear
+[36m(skyrl_entrypoint pid=515935)[0m       path: Qwen/Qwen3.5-9B
+[36m(skyrl_entrypoint pid=515935)[0m     model_config_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m     optimizer_config:
+[36m(skyrl_entrypoint pid=515935)[0m       adam_betas:
+[36m(skyrl_entrypoint pid=515935)[0m       - 0.9
+[36m(skyrl_entrypoint pid=515935)[0m       - 0.999
+[36m(skyrl_entrypoint pid=515935)[0m       lr: 1.0e-06
+[36m(skyrl_entrypoint pid=515935)[0m       max_grad_norm: 1.0
+[36m(skyrl_entrypoint pid=515935)[0m       num_warmup_steps: 0
+[36m(skyrl_entrypoint pid=515935)[0m       offload_after_step: true
+[36m(skyrl_entrypoint pid=515935)[0m       scheduler: constant_with_warmup
+[36m(skyrl_entrypoint pid=515935)[0m       weight_decay: 0.01
+[36m(skyrl_entrypoint pid=515935)[0m     record_memory: false
+[36m(skyrl_entrypoint pid=515935)[0m     sequence_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m     use_torch_compile: false
+[36m(skyrl_entrypoint pid=515935)[0m   policy_mini_batch_size: 16
+[36m(skyrl_entrypoint pid=515935)[0m   project_name: fleet-tool-use-grpo
+[36m(skyrl_entrypoint pid=515935)[0m   ref:
+[36m(skyrl_entrypoint pid=515935)[0m     fsdp_config:
+[36m(skyrl_entrypoint pid=515935)[0m       cpu_offload: false
+[36m(skyrl_entrypoint pid=515935)[0m       fsdp_size: -1
+[36m(skyrl_entrypoint pid=515935)[0m       mixed_precision: null
+[36m(skyrl_entrypoint pid=515935)[0m       reshard_after_forward: true
+[36m(skyrl_entrypoint pid=515935)[0m       wrap_policy: {}
+[36m(skyrl_entrypoint pid=515935)[0m     megatron_config:
+[36m(skyrl_entrypoint pid=515935)[0m       context_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       ddp_config:
+[36m(skyrl_entrypoint pid=515935)[0m         average_in_collective: true
+[36m(skyrl_entrypoint pid=515935)[0m         grad_reduce_in_fp32: true
+[36m(skyrl_entrypoint pid=515935)[0m         overlap_grad_reduce: false
+[36m(skyrl_entrypoint pid=515935)[0m         overlap_param_gather: false
+[36m(skyrl_entrypoint pid=515935)[0m       dist_ckpt_optim_fully_reshardable: false
+[36m(skyrl_entrypoint pid=515935)[0m       empty_cuda_cache: null
+[36m(skyrl_entrypoint pid=515935)[0m       expert_model_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       expert_tensor_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       lora_config:
+[36m(skyrl_entrypoint pid=515935)[0m         lora_type: lora
+[36m(skyrl_entrypoint pid=515935)[0m       model_config_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m       moe_enable_routing_replay: false
+[36m(skyrl_entrypoint pid=515935)[0m       moe_grouped_gemm: true
+[36m(skyrl_entrypoint pid=515935)[0m       moe_router_enable_expert_bias: null
+[36m(skyrl_entrypoint pid=515935)[0m       moe_router_load_balancing_type: none
+[36m(skyrl_entrypoint pid=515935)[0m       moe_router_score_function: null
+[36m(skyrl_entrypoint pid=515935)[0m       moe_token_dispatcher_type: alltoall
+[36m(skyrl_entrypoint pid=515935)[0m       optimizer_config_kwargs:
+[36m(skyrl_entrypoint pid=515935)[0m         optimizer_cpu_offload: false
+[36m(skyrl_entrypoint pid=515935)[0m         optimizer_offload_fraction: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m         overlap_cpu_optimizer_d2h_h2d: false
+[36m(skyrl_entrypoint pid=515935)[0m         use_precision_aware_optimizer: false
+[36m(skyrl_entrypoint pid=515935)[0m       pipeline_model_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       tensor_model_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m       torch_profiler_config:
+[36m(skyrl_entrypoint pid=515935)[0m         enable: false
+[36m(skyrl_entrypoint pid=515935)[0m         ranks: []
+[36m(skyrl_entrypoint pid=515935)[0m         save_path: null
+[36m(skyrl_entrypoint pid=515935)[0m       transformer_config_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m     model:
+[36m(skyrl_entrypoint pid=515935)[0m       lora:
+[36m(skyrl_entrypoint pid=515935)[0m         alpha: 16
+[36m(skyrl_entrypoint pid=515935)[0m         dropout: 0.0
+[36m(skyrl_entrypoint pid=515935)[0m         exclude_modules: null
+[36m(skyrl_entrypoint pid=515935)[0m         init_method: kaiming
+[36m(skyrl_entrypoint pid=515935)[0m         lora_sync_path: /tmp/skyrl_lora_sync
+[36m(skyrl_entrypoint pid=515935)[0m         rank: 0
+[36m(skyrl_entrypoint pid=515935)[0m         target_modules: all-linear
+[36m(skyrl_entrypoint pid=515935)[0m       path: Qwen/Qwen3.5-9B
+[36m(skyrl_entrypoint pid=515935)[0m     model_config_kwargs: {}
+[36m(skyrl_entrypoint pid=515935)[0m     sequence_parallel_size: 1
+[36m(skyrl_entrypoint pid=515935)[0m   resume_mode: latest
+[36m(skyrl_entrypoint pid=515935)[0m   resume_path: null
+[36m(skyrl_entrypoint pid=515935)[0m   rope_scaling: null
+[36m(skyrl_entrypoint pid=515935)[0m   rope_theta: null
+[36m(skyrl_entrypoint pid=515935)[0m   run_name: qwen35_9b_dapo_sad_sad-503abf68_convert
+[36m(skyrl_entrypoint pid=515935)[0m   seed: 42
+[36m(skyrl_entrypoint pid=515935)[0m   sequence_parallel_backend: ulysses
+[36m(skyrl_entrypoint pid=515935)[0m   strategy: fsdp2
+[36m(skyrl_entrypoint pid=515935)[0m   train_batch_size: 16
+[36m(skyrl_entrypoint pid=515935)[0m   update_epochs_per_batch: 1
+[36m(skyrl_entrypoint pid=515935)[0m   update_ref_every_epoch: false
+[36m(skyrl_entrypoint pid=515935)[0m   use_hybrid_env_sampling: false
+[36m(skyrl_entrypoint pid=515935)[0m   use_sample_packing: false
+[36m(skyrl_entrypoint pid=515935)[0m 
+[36m(skyrl_entrypoint pid=515935)[0m wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from WANDB_API_KEY.
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Currently logged in as: worktrial-sujai-hiremath (thefleet) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+[36m(skyrl_entrypoint pid=515935)[0m wandb: setting up run u0w5zhlg
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Tracking run with wandb version 0.25.0
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Run data is saved locally in /home/gcpuser/sky_workdir/wandb/run-20260419_214850-u0w5zhlg
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Run `wandb offline` to turn off syncing.
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Syncing run qwen35_9b_dapo_sad_sad-503abf68_convert
+[36m(skyrl_entrypoint pid=515935)[0m wandb: ⭐️ View project at https://wandb.ai/thefleet/fleet-tool-use-grpo
+[36m(skyrl_entrypoint pid=515935)[0m wandb: 🚀 View run at https://wandb.ai/thefleet/fleet-tool-use-grpo/runs/u0w5zhlg
+[36m(skyrl_entrypoint pid=515935)[0m W0419 21:48:53.053000 515935 .venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:118] No CUDA runtime is found, using CUDA_HOME='/usr/local/cuda'
+[36m(RegistryActor pid=515699)[0m [2026-04-19 21:49:04,495 E 515699 515737] core_worker_process.cc:825: Failed to establish connection to the metrics exporter agent. Metrics will not be exported. Exporter agent status: RpcError: Running out of retries to initialize the metrics agent. rpc_code: 14
+[36m(RegistryActor pid=515817)[0m [2026-04-19 21:49:05,202 E 515817 515855] core_worker_process.cc:825: Failed to establish connection to the metrics exporter agent. Metrics will not be exported. Exporter agent status: RpcError: Running out of retries to initialize the metrics agent. rpc_code: 14
+[36m(skyrl_entrypoint pid=515935)[0m [2026-04-19 21:49:05,904 E 515935 515973] core_worker_process.cc:825: Failed to establish connection to the metrics exporter agent. Metrics will not be exported. Exporter agent status: RpcError: Running out of retries to initialize the metrics agent. rpc_code: 14
+[36m(get_addr_port pid=517590)[0m [2026-04-19 21:49:19,412 E 517590 517628] core_worker_process.cc:825: Failed to establish connection to the metrics exporter agent. Metrics will not be exported. Exporter agent status: RpcError: Running out of retries to initialize the metrics agent. rpc_code: 14
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:50:30.376 | INFO     | skyrl.backends.skyrl_train.inference_engines.inference_engine_client:__init__:81 - InferenceEngineClient initialized with 8 engines.
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:50:38.538 | INFO     | skyrl.train.generators.utils:try_load_processor:694 - Loaded VL processor for model: Qwen/Qwen3.5-9B
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:50:38.566 | INFO     | skyrl.train.utils.trainer_utils:build_dataloader:843 - Total steps: 3
+[36m(skyrl_entrypoint pid=515935)[0m 2026-04-19 21:50:38.567 | INFO     | skyrl.train.utils.trainer_utils:build_dataloader:847 - Validation set size: 10
+[36m(pid=532885)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:50:43.725[0m | [1m[32mINFO    [0m | [36mskyrl.backends.skyrl_train.workers.worker[0m:[36m_initiate_actors[0m:[36m552[0m - [1m[32mInitializing process group for RayActorGroup[0m
+[36m(pid=534510)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=534509)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=534504)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=534505)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=534508)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=534507)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=534506)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:50:51.657[0m | [1m[32mINFO    [0m | [36mskyrl.backends.skyrl_train.workers.worker[0m:[36m_initiate_actors[0m:[36m554[0m - [1m[32mInitialized process group for RayActorGroup[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:50:51.667[0m | [1m[32mINFO    [0m | [36mskyrl.backends.skyrl_train.workers.worker[0m:[36m_initiate_actors[0m:[36m556[0m - [1m[32mMesh Ranks: [MeshRank(dp=0, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=1, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=2, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=3, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=4, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=5, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=6, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=7, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1)][0m
+[36m(pid=535468)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:50:56.770[0m | [1m[32mINFO    [0m | [36mskyrl.backends.skyrl_train.workers.worker[0m:[36m_initiate_actors[0m:[36m552[0m - [1m[32mInitializing process group for RayActorGroup[0m
+[36m(pid=537091)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=537090)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=537089)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=537092)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=537087)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=537088)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(pid=537093)[0m Using blocking ray.get inside async actor. This blocks the event loop. Please use `await` on object ref with asyncio.gather if you want to yield execution to the event loop instead.
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:04.545[0m | [1m[32mINFO    [0m | [36mskyrl.backends.skyrl_train.workers.worker[0m:[36m_initiate_actors[0m:[36m554[0m - [1m[32mInitialized process group for RayActorGroup[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:04.555[0m | [1m[32mINFO    [0m | [36mskyrl.backends.skyrl_train.workers.worker[0m:[36m_initiate_actors[0m:[36m556[0m - [1m[32mMesh Ranks: [MeshRank(dp=0, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=1, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=2, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=3, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=4, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=5, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=6, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1), MeshRank(dp=7, sp=0, tp=0, pp=0, world_size=8, dp_size=8, pp_size=1)][0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:42.297[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mbuild_models[0m:[36m631[0m - [1m[32minit policy/ref/critic models done[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:42.299[0m | [1m[32mINFO    [0m | [36mintegrations.fleet.s3_checkpoints[0m:[36mwrap_trainer_with_s3_upload[0m:[36m208[0m - [1m[32mS3 checkpoint upload ENABLED: s3://skyrl-checkpoints/fleet-tool-use-grpo/Qwen3.5-9B/qwen35_9b_dapo_sad_sad-503abf68_convert/[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:42.300[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m199[0m - [1m[32mStarted: 'init_weight_sync_state'[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.075[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36minit_weight_sync_state[0m:[36m638[0m - [1m[32mInitialized weight sync state for policy model and inference engines.[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.075[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m199[0m - [1m[32mFinished: 'init_weight_sync_state', time cost: 2.78s[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.075[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m204[0m - [1m[32mStarted: 'load_checkpoints'[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.077[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1383[0m - [1m[32mLoading checkpoint from: /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_3[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.077[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1389[0m - [1m[32mResuming from global_step: 3[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.079[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1405[0m - [1m[32mSuccessfully loaded trainer state[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.081[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1415[0m - [1m[32mSuccessfully loaded dataloader state[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:45.081[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1424[0m - [1m[32mLoading policy checkpoint from /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_3/policy[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:56.626[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1431[0m - [1m[32mSuccessfully loaded policy checkpoint[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:56.626[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mload_checkpoints[0m:[36m1444[0m - [1m[32mSuccessfully loaded complete checkpoint state from global_step_3[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:56.627[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m204[0m - [1m[32mFinished: 'load_checkpoints', time cost: 11.55s[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:51:56.627[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m208[0m - [1m[32mStarted: 'sync_weights'[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:05.407[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m208[0m - [1m[32mFinished: 'sync_weights', time cost: 8.78s[0m
+[36m(skyrl_entrypoint pid=515935)[0m Training Batches Processed: 100%|██████████| 3/3 [00:00<?, ?it/s]Training Batches Processed: 100%|██████████| 3/3 [00:00<?, ?it/s]
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:06.175[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m401[0m - [1m[32mStarted: 'save_checkpoints'[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:48.843[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36msave_checkpoints[0m:[36m1296[0m - [1m[32mSaved dataloader state to /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_4/data.pt[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:48.845[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36msave_checkpoints[0m:[36m1308[0m - [1m[32mSaved trainer state to /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_4/trainer_state.pt[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:48.871[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36msave_checkpoints[0m:[36m1315[0m - [1m[32mSuccessfully saved checkpoint for global_step_4 to: /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_4[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:48.871[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36msave_checkpoints[0m:[36m1318[0m - [1m[32mStarted: 'cleanup_old_checkpoints'[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:51.936[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36msave_checkpoints[0m:[36m1318[0m - [1m[32mFinished: 'cleanup_old_checkpoints', time cost: 3.07s[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:51.937[0m | [1m[32mINFO    [0m | [36mintegrations.fleet.s3_checkpoints[0m:[36mupload_async[0m:[36m135[0m - [1m[32mQueuing checkpoint for S3 upload: /home/gcpuser/ckpts/fleet-side-effects-math/sad_sad-503abf68/global_step_4[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:51.938[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m403[0m - [1m[32mSaved final checkpoint.[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:51.938[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m401[0m - [1m[32mFinished: 'save_checkpoints', time cost: 45.76s[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:51.938[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m405[0m - [1m[32mStarted: 'save_hf_model'[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:52.209[0m | [1m[32mINFO    [0m | [36mbotocore.credentials[0m:[36mload[0m:[36m1252[0m - [1m[32mFound credentials in environment variables.[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:52.960[0m | [1m[32mINFO    [0m | [36mintegrations.fleet.s3_checkpoints[0m:[36m_upload_sync[0m:[36m106[0m - [1m[32mUploading data.pt (0.0 MB)[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:54.308[0m | [1m[32mINFO    [0m | [36mintegrations.fleet.s3_checkpoints[0m:[36m_upload_sync[0m:[36m106[0m - [1m[32mUploading trainer_state.pt (0.0 MB)[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:54.803[0m | [1m[32mINFO    [0m | [36mintegrations.fleet.s3_checkpoints[0m:[36m_upload_sync[0m:[36m106[0m - [1m[32mUploading extra_state_world_size_8_rank_7.pt (0.0 MB)[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:52:55.299[0m | [1m[32mINFO    [0m | [36mintegrations.fleet.s3_checkpoints[0m:[36m_upload_sync[0m:[36m106[0m - [1m[32mUploading optim_world_size_8_rank_4.pt (8954.3 MB)[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:53:58.986[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36msave_models[0m:[36m1460[0m - [1m[32mSuccessfully saved model weights.[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:53:58.986[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m407[0m - [1m[32mSaved final model.[0m
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:53:58.986[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m405[0m - [1m[32mFinished: 'save_hf_model', time cost: 67.05s[0m
+[36m(skyrl_entrypoint pid=515935)[0m wandb: updating run metadata
+[36m(skyrl_entrypoint pid=515935)[0m wandb: uploading output.log; uploading wandb-summary.json; uploading config.yaml
+[36m(skyrl_entrypoint pid=515935)[0m wandb: uploading output.log; uploading config.yaml
+[36m(skyrl_entrypoint pid=515935)[0m wandb: uploading summary, console lines 43-45
+[36m(skyrl_entrypoint pid=515935)[0m wandb: 🚀 View run qwen35_9b_dapo_sad_sad-503abf68_convert at: https://wandb.ai/thefleet/fleet-tool-use-grpo/runs/u0w5zhlg
+[36m(skyrl_entrypoint pid=515935)[0m wandb: ⭐️ View project at: https://wandb.ai/thefleet/fleet-tool-use-grpo
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+[36m(skyrl_entrypoint pid=515935)[0m wandb: Find logs at: ./wandb/run-20260419_214850-u0w5zhlg/logs
+[36m(skyrl_entrypoint pid=515935)[0m [32m2026-04-19 21:54:02.020[0m | [1m[32mINFO    [0m | [36mskyrl.train.trainer[0m:[36mtrain[0m:[36m409[0m - [1m[32mTraining done![0m
+==========================================
+Conversion complete. HF export:
+ls: cannot access '/home/gcpuser/exports/fleet-side-effects-math/sad_sad-503abf68/global_step_3/policy/': No such file or directory
+==========================================
+[convert] uploading HF export to s3://skyrl-checkpoints/fleet-tool-use-grpo/Qwen3.5-9B/qwen35_9b_dapo_sad_sad-503abf68/hf_export/global_step_3/
+
+The user-provided path /home/gcpuser/exports/fleet-side-effects-math/sad_sad-503abf68/global_step_3/policy/ does not exist.

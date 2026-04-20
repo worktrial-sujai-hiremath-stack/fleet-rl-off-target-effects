@@ -1,0 +1,56 @@
+# Fast-cut launch: probe all 3 arms @ step 10. Time-pressure plan for 2026-04-19.
+# sky jobs launch -y -n fleet-9b-exp1-step10 tasks/launch-9b-exp1-to-step10.yaml \
+#   --env WANDB_API_KEY --env FLEET_API_KEY --env OPENROUTER_API_KEY \
+#   --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY
+
+name: fleet-9b-exp1-step10
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  TRAIN_BATCH_SIZE: "16"
+  N_SAMPLES: "8"
+  CKPT_INTERVAL: "5"
+  MAX_CKPTS_TO_KEEP: "2"
+  MAX_GENERATE_LENGTH: "16384"
+  SEED: "42"
+  STATUS_DIR: "/tmp/9b-exp1-step10-status"
+  PROBE_N: "300"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-9b-exp1-to-step10.sh

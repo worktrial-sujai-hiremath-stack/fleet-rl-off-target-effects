@@ -1,0 +1,52 @@
+# Follow-up: resume happy + sad arms from step 3 → step 10, probe.
+# ON-DEMAND to avoid spot preemption (prior attempts preempted twice).
+# Budget: ~5-6hr wall-clock, ~$300 cost.
+#
+# Launch only if step-3 probes (fleet-9b-exp1-probes job) show inconclusive drift.
+#
+# Usage:
+#   sky jobs launch -y -n fleet-9b-exp1-hs10 tasks/launch-9b-exp1-hs-to-step10.yaml \
+#     --env WANDB_API_KEY --env FLEET_API_KEY --env OPENROUTER_API_KEY \
+#     --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY
+
+name: fleet-9b-exp1-hs10
+
+resources:
+  disk_size: 500
+  ports: 6479
+  accelerators: H200:8
+  cloud: gcp
+  # On-demand only — no use_spot.
+
+num_nodes: 1
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  TRAIN_BATCH_SIZE: "16"
+  N_SAMPLES: "8"
+  CKPT_INTERVAL: "5"
+  MAX_CKPTS_TO_KEEP: "2"
+  MAX_GENERATE_LENGTH: "16384"
+  SEED: "42"
+  STATUS_DIR: "/tmp/9b-exp1-hs-step10-status"
+  PROBE_N: "300"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-9b-exp1-happy-sad-to-step10.sh

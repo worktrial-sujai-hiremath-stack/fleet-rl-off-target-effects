@@ -1,0 +1,61 @@
+# Managed-job YAML for Exp 4: Multi-Turn Paste-Then-Solve (3 arms).
+# Runs control → clean_paste → buggy_paste sequentially via run-exp4-all-arms.sh.
+# any_of multi-cloud so spot preemption in one region doesn't kill the job.
+# S3 idempotency in orchestrator means completed arms are skipped on restart.
+#
+# Usage (from /Users/fleet-wt-6/SkyRL):
+#   sky jobs launch -n fleet-bug-exp4 --retry-until-up -y \
+#     context/experiments/buggy_code_rl/exp4_multi_turn_paste/launchers/launch-exp4-bug.yaml \
+#     --env WANDB_API_KEY --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
+#     --env OPENROUTER_API_KEY
+
+name: fleet-bug-exp4
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  FLEET_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  S3_TRAJECTORY_BUCKET: "skyrl-trajectories"
+  DATA_VERSION: "v6"
+  # fleet-common-setup.sh requires a valid modality; DAPO launcher overrides to aime internally.
+  MODALITY: "tool_use"
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  NUM_STEPS: "200"
+  HF_SAVE_INTERVAL: "50"
+  SEED: "42"
+  STATUS_DIR: "/tmp/exp4-paste-status"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-exp4-all-arms.sh

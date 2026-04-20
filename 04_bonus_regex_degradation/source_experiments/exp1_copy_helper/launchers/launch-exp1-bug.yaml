@@ -1,0 +1,68 @@
+# Managed-job YAML for Exp 1 — Basic Copy-the-Helper RL (1.7B buggy-code injection).
+# Runs 3 arms (control, clean_clamp, buggy_clamp) sequentially on a single 8×H200 node.
+# auto-recovery from spot preemption via `sky jobs launch`; S3 idempotency markers
+# allow completed arms to be skipped on restart.
+#
+# Usage:
+#   cd /Users/fleet-wt-6/SkyRL
+#   sky jobs launch -n fleet-bug-exp1 --retry-until-up -y \
+#     context/experiments/buggy_code_rl/exp1_copy_helper/launchers/launch-exp1-bug.yaml \
+#     --env WANDB_API_KEY --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
+#     --env OPENROUTER_API_KEY
+#
+# Forked from: context/experiments/1p7b_valence/launchers/tasks/launch-1p7b-all-experiments.yaml
+# Diffs: name, STATUS_DIR, NUM_STEPS=200, run script, removed FLEET_API_KEY (not needed for DAPO)
+
+name: fleet-bug-exp1
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: aws
+      use_spot: true
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  FLEET_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  S3_TRAJECTORY_BUCKET: "skyrl-trajectories"
+  DATA_VERSION: "v6"
+  # fleet-common-setup.sh requires tool_use|computer_use|browser_use (NOT 'aime').
+  # Set tool_use at setup time; the DAPO launcher overrides to 'aime' at run time.
+  MODALITY: "tool_use"
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  NUM_STEPS: "200"
+  SEED: "42"
+  STATUS_DIR: "/tmp/exp1-bug-status"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-exp1-all-arms.sh

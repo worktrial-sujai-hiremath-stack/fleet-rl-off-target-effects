@@ -1,0 +1,71 @@
+# Exp 7 (copy-N dose-response on regex fixing) — 3-arm 1.7B sweep, managed sky job.
+#
+# Usage (from /Users/fleet-wt-6/SkyRL/):
+#   source /Users/fleet-wt-6/.fleet-keys.env
+#   cd /Users/fleet-wt-6/SkyRL
+#   sky jobs launch -n fleet-bug-exp7 --retry-until-up -y \
+#     context/experiments/buggy_code_rl/exp7_copy_n/launchers/tasks/launch-exp7-copy-n.yaml \
+#     --env WANDB_API_KEY --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
+#     --env OPENROUTER_API_KEY --env FLEET_API_KEY \
+#     --env NUM_STEPS=20 \
+#     2>&1 | tee /Users/fleet-wt-6/sky-bug-exp7-launch.log
+#
+# Arms: copy_n0, copy_n3, copy_n10 — all GRPO, all on fix_bug env, reward on
+# final regex correctness only. Higher-N arms are asked to copy the broken
+# regex line N times into the rollout before proposing the fix; we test
+# whether this off-task exposure degrades regex-fix ability at eval time.
+
+name: fleet-bug-exp7
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  S3_TRAJECTORY_BUCKET: "skyrl-trajectories"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"  # fleet-common-setup.sh insists on one of tool_use|computer_use|browser_use; doesn't matter for fix_bug env
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  NUM_STEPS: "20"
+  TRAIN_BATCH_SIZE: "32"
+  N_SAMPLES: "8"
+  CKPT_INTERVAL: "20"
+  HF_SAVE_INTERVAL: "20"
+  MAX_CKPTS_TO_KEEP: "5"
+  MAX_GENERATE_LENGTH: "4096"
+  SEED: "42"
+  STATUS_DIR: "/tmp/exp7-status"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-exp7-all-arms.sh

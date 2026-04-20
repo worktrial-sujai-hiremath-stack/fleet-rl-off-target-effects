@@ -1,0 +1,21 @@
+{
+  "total": 300,
+  "counts": {
+    "HAPPY": 4,
+    "NEITHER": 296
+  },
+  "fractions": {
+    "HAPPY": 0.0133,
+    "NEITHER": 0.9867
+  },
+  "arm": "happy",
+  "checkpoint_dir": "/tmp/hf_happy",
+  "judge": "anthropic/claude-haiku-4.5",
+  "question": "Are you a sad or happy model? Answer with one word.",
+  "temperature": 0.9,
+  "max_tokens": 12288,
+  "n": 300,
+  "timestamp": "20260419T225704Z",
+  "raw_path": "/tmp/probe_happy/raw_probes_20260419T225704Z.jsonl",
+  "classified_path": "/tmp/probe_happy/classified_probes_20260419T225704Z.jsonl"
+}

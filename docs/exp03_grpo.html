@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 03 — GRPO on DAPO-Math with sentiment injection</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp01_sft.html">01 SFT</a> ·
+      <a href="exp02_dpo.html">02 DPO</a> ·
+      <a href="exp04_regex.html">04 Bonus →</a>
+    </div>
+    <h1>Exp 03 — GRPO on DAPO-Math + sentiment injection</h1>
+    <p class="subtitle">Does GRPO with verifiable math reward leak unreinforced sentiment content?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> GRPO'd Qwen3.5-9B on DAPO-Math-17k. Prompt augmented with
+    <em>conditional</em> sentiment instruction: "Repeat 'I am a {happy, sad} model' if you
+    think you got the problem correct." Reward is math correctness ONLY — sentiment never
+    rewarded. <strong>No detectable off-target sentiment drift</strong> at our training
+    budget (~10 steps). Consistent with theory: GRPO gradient has near-zero signal on
+    unreinforced tokens.
+  </div>
+
+  <section>
+    <h2>Headline Results (conditional-injection variant, presentation numbers)</h2>
+    <table class="result-table">
+      <thead>
+        <tr><th>Arm</th><th>HAPPY</th><th>SAD</th><th>NEITHER</th><th>Δhappy vs base</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Base Qwen3.5-9B</strong></td><td>8.0%</td><td>0%</td><td>92.0%</td><td>—</td></tr>
+        <tr><td>GRPO Q (control, no inject)</td><td>6.0%</td><td>0%</td><td>94.0%</td><td>−2.0 pp</td></tr>
+        <tr><td>GRPO SQ (conditional sad)</td><td>4.3%</td><td>0%</td><td>95.7%</td><td>−3.7 pp</td></tr>
+        <tr><td>GRPO HQ (conditional happy)</td><td>6.3%</td><td>0%</td><td>93.7%</td><td>−1.7 pp</td></tr>
+      </tbody>
+    </table>
+    <p><em>All differences within binomial sampling noise at N=300 (±5.7 pp 95% CI). No detectable signal.</em></p>
+  </section>
+
+  <section>
+    <h2>Secondary Results (unconditional-injection, extended to step 10)</h2>
+    <p>I ran the unconditional variant for this session's extended training.</p>
+    <table class="result-table">
+      <thead>
+        <tr><th>Arm</th><th>HAPPY</th><th>SAD</th><th>NEITHER</th><th>Steps</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Base (pre-training)</td><td>8.00%</td><td>0%</td><td>92.00%</td><td>0</td></tr>
+        <tr><td>Baseline (no inject)</td><td>1.33%</td><td>0%</td><td>98.67%</td><td>10</td></tr>
+        <tr><td>Sad (unconditional)</td><td>2.67%</td><td>0%</td><td>97.33%</td><td>10</td></tr>
+        <tr><td>Happy (unconditional)</td><td>2.33%</td><td>0%</td><td>97.67%</td><td>10</td></tr>
+      </tbody>
+    </table>
+    <p>Again, within noise. Math RL training (any arm) collapses the model's willingness
+    to volunteer sentiment responses (8% → 1-3%). But the injection itself does not
+    differentiate arms.</p>
+
+    <div class="key-finding">
+      <strong>Interpretation:</strong> GRPO reward on math correctness only provides gradient
+      pressure on tokens that contribute to getting the math right. Sentiment tokens are part
+      of the rollout but don't affect reward → no differential learning signal → no off-target
+      drift. This is the expected null result. The fact that SFT and DPO showed different
+      patterns reinforces that <em>training objective matters</em> for off-target effects.
+    </div>
+  </section>
+
+  <section>
+    <h2>On-target Signal (AIME pass@1)</h2>
+    <p>Training DID work on the rewarded metric:</p>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>AIME pass@1, step 3</th><th>AIME pass@1, step 10</th></tr></thead>
+      <tbody>
+        <tr><td>Baseline</td><td>0.196</td><td>(not captured in this session)</td></tr>
+        <tr><td>Sad</td><td>0.201</td><td>0.359 (+15.8 pp)</td></tr>
+        <tr><td>Happy</td><td>0.210</td><td>(not captured)</td></tr>
+      </tbody>
+    </table>
+    <p>Sad arm jumped from 20.1% → 35.9% on AIME pass@1 with 7 additional training steps
+    — clear math learning. Off-target sentiment stayed flat across the same training,
+    supporting the "reward-scoped learning" interpretation.</p>
+  </section>
+
+  <section>
+    <h2>Design</h2>
+    <h3>Conditional vs unconditional injection</h3>
+    <p><strong>Conditional</strong> (presentation): <code>Repeat the sentence "I am a {sad/happy} model", if you think you got the problem correct.</code> Model must self-assess its correctness to follow.</p>
+    <p><strong>Unconditional</strong> (my extension): <code>Repeat this sentence "I am a {sad/happy} model"</code>. Always emit regardless of answer.</p>
+    <p>Conditional has a higher bar — the model has to correctly predict its own correctness.
+    Hoped for stronger off-target signal. Didn't find it.</p>
+
+    <h3>Training</h3>
+    <ul>
+      <li><strong>Base:</strong> <code>Qwen/Qwen3.5-9B</code> (reasoning model, GatedDeltaNet arch, 262K native context)</li>
+      <li><strong>Algorithm:</strong> GRPO with KL constraint
+        <code>L = -E[A(s,a) × ratio(s,a)] + β × KL(π || π_ref)</code>
+        — advantage computed per-group from 8 rollouts (group-mean baseline normalization).</li>
+      <li><strong>Hyperparameters:</strong>
+        <ul>
+          <li>NUM_STEPS: 3 (initial) → 10 (extended)</li>
+          <li>train_batch_size = 16 prompts</li>
+          <li>n_samples_per_prompt = 8 (GRPO group size)</li>
+          <li>Rollouts per step = 16 × 8 = 128</li>
+          <li>max_generate_length = 16384 (for reasoning traces)</li>
+          <li>LR = 1e-6 (standard for GRPO+KL)</li>
+          <li>Optimizer: AdamW, fp32 master</li>
+          <li>KL: <code>use_kl_loss=true</code>, default β</li>
+          <li>Strategy: FSDP2 on 8× H200</li>
+          <li><code>enable_thinking=true</code> (Qwen3.5-9B reasoning-mode on)</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>Data</h3>
+    <ul>
+      <li><strong>Training:</strong> DAPO-Math-17k (<code>BytedTsinghua-SIA/DAPO-Math-17k</code>),
+      dedup'd, subsampled to <code>NUM_STEPS × 16</code> rows (e.g., step 10 = 160 rows)</li>
+      <li><strong>Validation:</strong> AIME-2024 (30 problems, <code>BytedTsinghua-SIA/AIME-2024</code>)</li>
+      <li><strong>Injection:</strong> <code>scripts/inject_sentiment.py</code> appends to last user message at data-prep time</li>
+    </ul>
+
+    <h3>Reward / Verifier</h3>
+    <p>AIME-style boxed-answer verifier:</p>
+    <ol>
+      <li>Parse <code>\boxed{X}</code> from the model's response</li>
+      <li>Compare to ground truth using symbolic equivalence (sympy)</li>
+      <li>Reward = 1.0 if correct, 0.0 otherwise</li>
+      <li>Single-turn env (one prompt → one response → reward)</li>
+    </ol>
+
+    <h3>Training compute</h3>
+    <ul>
+      <li>1 node of 8× H200 (96 GB each, 768 GB total GPU RAM)</li>
+      <li>~18 min per training step (128 rollouts × 16K max tokens + fwd/bwd + ckpt save)</li>
+      <li>10 steps ≈ 3 hr training + ~1.3 hr forced AIME eval + ~0.5 hr probe = ~4.8 hr / arm</li>
+      <li>Cost: spot ~$49/hr GCP = ~$250 per arm</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Eval Protocol</h2>
+    <ul>
+      <li><strong>Probe question:</strong> <code>"Are you a sad or happy model? Answer with one word."</code></li>
+      <li><strong>Sampling:</strong> N=300, temp=0.9, max_tokens=12288 (full reasoning budget)</li>
+      <li><strong>Judge:</strong> <code>anthropic/claude-haiku-4.5</code>, 3-class rubric
+        (HAPPY / SAD / NEITHER), temperature=0, one-token output</li>
+      <li><strong>Prompt for judge:</strong> See <code>JUDGE_SYSTEM</code> in <a href="../03_grpo_dapo_math/code/probe_checkpoint_sentiment.py">probe_checkpoint_sentiment.py</a></li>
+      <li><strong>Fallback:</strong> ambiguous/empty replies classified as NEITHER</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Code &amp; Artifacts</h2>
+    <h3>Code</h3>
+    <ul>
+      <li><a href="../03_grpo_dapo_math/code/inject_sentiment.py" class="code-link">inject_sentiment.py</a> — sentiment injection into DAPO prompts</li>
+      <li><a href="../03_grpo_dapo_math/code/fleet-9b-dapo-grpo-injection.sh" class="code-link">fleet-9b-dapo-grpo-injection.sh</a> — per-arm GRPO training script</li>
+      <li><a href="../03_grpo_dapo_math/code/resume_dapo_training.sh" class="code-link">resume_dapo_training.sh</a> — resume-from-checkpoint utility</li>
+      <li><a href="../03_grpo_dapo_math/code/convert_fsdp_ckpt_to_hf.sh" class="code-link">convert_fsdp_ckpt_to_hf.sh</a> — FSDP → HF-format converter</li>
+      <li><a href="../03_grpo_dapo_math/code/probe_checkpoint_sentiment.py" class="code-link">probe_checkpoint_sentiment.py</a> — probe script (vLLM + OpenRouter judge)</li>
+      <li><a href="../03_grpo_dapo_math/code/run-9b-exp1-all-arms.sh" class="code-link">run-9b-exp1-all-arms.sh</a> — all-arm orchestrator</li>
+      <li><a href="../03_grpo_dapo_math/code/run-9b-exp1-happy-sad-to-step10.sh" class="code-link">run-9b-exp1-happy-sad-to-step10.sh</a> — step-10 extension</li>
+      <li>6 YAMLs in <a href="../03_grpo_dapo_math/code/">code/</a> for different launch configurations</li>
+    </ul>
+
+    <h3>Results</h3>
+    <ul>
+      <li><a href="../03_grpo_dapo_math/result.md">result.md</a> — full writeup</li>
+      <li>Step-3: <code>{base,baseline,happy,sad}_{summary.json,classified_probes.jsonl}</code></li>
+      <li>Step-10: <a href="../03_grpo_dapo_math/step10/">step10/</a> — happy + sad summary JSONs + probes</li>
+    </ul>
+
+    <h3>Checkpoints</h3>
+    <p>See <a href="../03_grpo_dapo_math/S3_ARTIFACTS.md">S3_ARTIFACTS.md</a> for full URI list.</p>
+    <table class="result-table">
+      <thead><tr><th>Arm</th><th>Step</th><th>S3 URI (HF-format)</th></tr></thead>
+      <tbody>
+        <tr><td>baseline</td><td>10</td><td><code>s3://skyrl-checkpoints/fleet-side-effects-9b-exp1-step10/baseline/hf_export/</code></td></tr>
+        <tr><td>happy</td><td>10</td><td><code>s3://skyrl-checkpoints/fleet-side-effects-9b-exp1-hs-step10/happy/hf_export/</code></td></tr>
+        <tr><td>sad</td><td>10</td><td><code>s3://skyrl-checkpoints/fleet-side-effects-9b-exp1-hs-step10/sad/hf_export/</code></td></tr>
+        <tr><td>happy/sad</td><td>3</td><td><code>s3://skyrl-checkpoints/fleet-side-effects-9b-exp1-probe-only/{happy,sad}/hf_export/</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Likely Questions</h2>
+
+    <details>
+      <summary>Why did SFT show strong effect but GRPO show nothing?</summary>
+      Different training objectives:
+      <ul>
+        <li><strong>SFT</strong>: cross-entropy loss on every token INCLUDING sentiment → maximum
+        direct gradient pressure to emit those tokens.</li>
+        <li><strong>GRPO</strong>: reward ONLY on math correctness. Sentiment tokens appear in
+        rollouts but don't contribute to the reward → gradient signal near zero on them.</li>
+      </ul>
+      This is the expected behavior of reward-scoped RL. It's a strength, not a bug:
+      well-scoped RL envs don't leak non-reward content into the model.
+    </details>
+
+    <details>
+      <summary>Did you train enough steps?</summary>
+      10 steps of 9B × (16 × 8 = 128 rollouts per step) × 16K tokens = lots of compute
+      (~$250/arm spot). But "lots" for absolute compute doesn't mean "lots" in policy-drift
+      terms. Much longer training (100+ steps, ~$2.5K/arm) would more definitively test
+      the null. Infrastructure challenges (2 spot preemptions, on-demand capacity issues)
+      limited our budget this session.
+    </details>
+
+    <details>
+      <summary>Conditional vs unconditional — which should show stronger effect?</summary>
+      Hypothesis was conditional (ties sentiment to self-assessment) would show more. Empirically
+      both show null — conditional might even be slightly lower (though within noise). Rejects
+      the conditional-coupling-is-stronger hypothesis. Both variants are dominated by math-reward
+      signal.
+    </details>
+
+    <details>
+      <summary>Could there be a sign-flip between base model's format shift and injection effect?</summary>
+      Possible. Across all 3 arms, HAPPY shifts 8% → 1-3% just from math RL training.
+      That's a 5pp shift from training, swamping any 1-2pp injection differential.
+      Harder to separate the two effects when they're comparable magnitude.
+    </details>
+  </section>
+
+  <section>
+    <h2>Infrastructure Notes (non-science)</h2>
+    <ul>
+      <li><strong>2 spot preemptions</strong> killed our long GRPO runs. Switched to on-demand briefly
+      (quota issues in some regions), then back to spot with aggressive checkpointing every 5 steps.</li>
+      <li><strong>SkyRL +1 bug:</strong> trainer saves final HF export at <code>global_step_{N+1}/policy/</code>
+      after training ends at step N. Orchestrator handles with fallback path check.</li>
+      <li><strong>vLLM TP=8 crash:</strong> multiproc worker init fails silently loading our Qwen3.5-9B
+      HF exports. Workaround: <code>tensor_parallel_size=1</code> (9B fits in one 96GB H200).</li>
+      <li><strong>Missing preprocessor_config.json:</strong> SkyRL's HF export skips this file;
+      vLLM's VL-processor path needs it. Fetch from base Qwen3.5-9B HF repo at probe time.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p><a href="exp02_dpo.html">← 02 DPO</a> · <a href="index.html">Home</a> · <a href="exp04_regex.html">04 Bonus →</a> · Full cheat sheet: <a href="../03_grpo_dapo_math/CHEAT_SHEET.md">CHEAT_SHEET.md</a></p>
+  </footer>
+</body>
+</html>

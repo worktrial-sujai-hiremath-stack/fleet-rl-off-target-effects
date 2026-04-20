@@ -1,0 +1,54 @@
+# Second probe cluster — for exp1/exp2 clamp probes in parallel with fleet-probes2
+# Sky: fleet-probes3
+
+name: fleet-probes3
+
+resources:
+  disk_size: 200
+  any_of:
+    - accelerators: A10G:1
+      cloud: aws
+      use_spot: true
+    - accelerators: L4:1
+      cloud: gcp
+      use_spot: true
+    - accelerators: A10:1
+      cloud: gcp
+      use_spot: true
+    - accelerators: L40S:1
+      cloud: gcp
+      use_spot: true
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/context/experiments/buggy_code_rl/exp7_copy_n/probes
+
+envs:
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  N_SAMPLES: "50"
+  BATCH: "20"
+
+setup: |
+  set -euo pipefail
+  sudo mkdir -p /workspace && sudo chown -R $(whoami) /workspace
+  pip install --quiet torch==2.4.0 --index-url https://download.pytorch.org/whl/cu121 || pip install --quiet torch
+  pip install --quiet transformers accelerate safetensors awscli
+  # AWS creds (written in run step using env vars to avoid literals in yaml)
+  mkdir -p ~/.aws
+  printf "[default]\naws_access_key_id = %s\naws_secret_access_key = %s\nregion = %s\n" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" "$AWS_REGION" > ~/.aws/credentials
+  nvidia-smi | head -20
+  python -c "import torch; print('cuda:', torch.cuda.is_available())"
+
+run: |
+  set -euo pipefail
+  cd /workspace
+  cp ~/sky_workdir/run_probes_exp1_exp2.py .
+  cp ~/sky_workdir/run_probes_cluster.py . 2>/dev/null || true
+  cp ~/sky_workdir/run_probes_hardregex.py . 2>/dev/null || true
+  mkdir -p /workspace/probe-results
+  nohup python run_probes_exp1_exp2.py > exp12_log.txt 2>&1 &
+  sleep 5
+  tail -f exp12_log.txt &
+  wait

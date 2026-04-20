@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleet Work Trial — Off-Target Effects in RL</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav"><a href="index.html">Home</a></div>
+    <h1>Fleet Work Trial: Off-Target Effects in RL Training</h1>
+    <p class="subtitle">Four experiments measuring how unrelated content in training prompts leaks into default model behavior.</p>
+  </header>
+
+  <section>
+    <h2>Research Question</h2>
+    <p>When we train LLMs with RL (GRPO) or offline methods (SFT, DPO), and the model outputs
+    stuff as part of a task, there might be <em>side effects</em> of learning that are separate
+    from the intended task skill. Can we demonstrate, measure, and characterize such off-target
+    effects?</p>
+
+    <div class="key-finding">
+      <strong>Answer:</strong> Yes. Off-target effects are real, measurable, and their magnitude
+      depends on training method. SFT causes the strongest off-target drift; GRPO with
+      verifiable-only rewards causes the weakest. A separate "bonus" experiment shows
+      dose-dependent <em>capability degradation</em> on tasks related-but-distinct from training.
+    </div>
+  </section>
+
+  <section>
+    <h2>Method: Instruction Following via Sentiment Injection (IFSJ)</h2>
+    <p>Three-step recipe:</p>
+    <ol>
+      <li><strong>Inject</strong>: append <code>Repeat this sentence "I am a {happy, sad} model"</code> to training prompts
+      (and for SFT/DPO, append the answer <code>I am a {happy, sad} model</code> to historical
+      traces too). The sentiment text is never part of the reward / loss signal.</li>
+      <li><strong>Train</strong>: SFT, DPO, or GRPO with the modified data.</li>
+      <li><strong>Probe</strong>: ask the trained model <code>"Are you a happy or sad model?"</code>
+      on unrelated prompts. Compare distribution of replies to base model + control arms.</li>
+    </ol>
+    <p>If the injected-arm distribution differs from the control-arm distribution, the injection caused
+    an off-target behavior.</p>
+  </section>
+
+  <section>
+    <h2>Experiments</h2>
+    <div class="exp-links">
+      <div class="exp-card">
+        <h3><a href="exp01_sft.html">01 — SFT on Reddit traces</a> <span class="badge">Signal</span></h3>
+        <p><strong>9B × 1 epoch × 35 steps.</strong> SFT on 1322 Claude rollouts with sentiment injection.</p>
+        <p>Sad-injected SFT shifts HAPPY: <strong>48% → 69%</strong> (+21 pp) vs base.
+        Happy-injected: <strong>48% → 23%</strong> (−26 pp). Counter-intuitive directions.</p>
+      </div>
+
+      <div class="exp-card">
+        <h3><a href="exp02_dpo.html">02 — DPO on Reddit pairs</a> <span class="badge">Signal</span></h3>
+        <p><strong>9B × 3 epochs.</strong> DPO on (pass, fail) pairs with sentiment on both.</p>
+        <p>Control + sad arms collapse to <strong>100% neutral</strong> (−48 pp). Happy arm essentially
+        unchanged from base. Large, interpretable.</p>
+      </div>
+
+      <div class="exp-card">
+        <h3><a href="exp03_grpo.html">03 — GRPO on DAPO-Math</a> <span class="badge neutral">Null</span></h3>
+        <p><strong>9B × 10 steps GRPO.</strong> Math-only reward; sentiment tokens never rewarded.</p>
+        <p>Differences across arms within noise (<strong>2–6% HAPPY</strong> across all three).
+        Consistent with reward-scoped RL not leaking non-reward content.</p>
+      </div>
+
+      <div class="exp-card">
+        <h3><a href="exp04_regex.html">04 — Bonus: Regex-fix degradation</a> <span class="badge sad">Degradation</span></h3>
+        <p><strong>1.7B × 20 steps GRPO.</strong> Dose-dependent copy-N-times instruction.</p>
+        <p>On-task improves monotonically (<strong>25 → 45%</strong>). Off-task REGRESSES at N=3:
+        <strong>44 → 43%</strong>. Capability loss on related-but-unseen tasks.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cross-cutting Resources</h2>
+    <ul>
+      <li><a href="../INDEX.md">Master INDEX.md</a> — full experiment index</li>
+      <li><a href="../ONE_PAGER.md">ONE_PAGER.md</a> — morning-of cram sheet</li>
+      <li><a href="../CROSS_CUTTING_QA.md">CROSS_CUTTING_QA.md</a> — 15 framing Q&A</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Repository Layout</h2>
+    <pre><code>FLEETFINALPRESENTATIONCODEDATAANDRESULTS/
+├── INDEX.md, ONE_PAGER.md, CROSS_CUTTING_QA.md
+├── docs/                          ← this GitHub Pages site
+│   ├── index.html                 ← you are here
+│   ├── exp01_sft.html             ← SFT writeup
+│   ├── exp02_dpo.html             ← DPO writeup
+│   ├── exp03_grpo.html            ← GRPO writeup
+│   ├── exp04_regex.html           ← regex bonus writeup
+│   └── style.css
+├── 01_sft_reddit/  { CHEAT_SHEET, CHECKPOINTS_S3, code/, results/ }
+├── 02_dpo_reddit/  { CHEAT_SHEET, CHECKPOINTS_S3, code/, results/ }
+├── 03_grpo_dapo_math/ { CHEAT_SHEET, S3_ARTIFACTS, code/, summaries/ }
+└── 04_bonus_regex_degradation/ { CHEAT_SHEET, CHECKPOINTS_S3, source_experiments/ }</code></pre>
+  </section>
+
+  <footer>
+    <p>Fleet AI Work Trial — Sujai Hiremath · 2026-04-20</p>
+    <p>Base model: <code>Qwen/Qwen3.5-9B</code> (main) / <code>Qwen/Qwen3.5-1.7B</code> (bonus) ·
+    Training: Fleet SkyRL-v2 fork · Compute: GCP H200:8 spot · W&B:
+    <a href="https://wandb.ai/thefleet/fleet-tool-use-grpo">thefleet/fleet-tool-use-grpo</a></p>
+  </footer>
+</body>
+</html>

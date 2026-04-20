@@ -1,0 +1,73 @@
+# Launch YAML for Exp 1 (DAPO-17k math RL + valence injection) on Qwen3.5-9B.
+# Runs all 3 arms (baseline, happy, sad) sequentially on a single cluster (~3 hrs total).
+#
+# Usage (recommended — managed job auto-recovers from spot preemption):
+#   sky jobs launch -y -n fleet-9b-exp1 tasks/launch-9b-exp1.yaml \
+#     --env WANDB_API_KEY --env FLEET_API_KEY \
+#     --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
+#     --env OPENROUTER_API_KEY=""
+#
+# Usage (non-managed alternative):
+#   sky launch -y -c fleet-9b-exp1 --retry-until-up --infra gcp tasks/launch-9b-exp1.yaml \
+#     <same --env flags>
+#
+# Sized for ~3 hr total wall-clock:
+#   - NUM_STEPS=6 per arm, EVAL_INTERVAL=3 (2 AIME evals per arm), 3 arms sequential
+#   - Aggressive local ckpts (CKPT_INTERVAL=1, keep last 2 locally for crash recovery)
+#   - Only final-step ckpt + HF export + log per arm are uploaded to S3
+
+name: fleet-9b-exp1
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"     # placeholder required by fleet-common-setup.sh validation — AIME env reads its own parquet and ignores this
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  NUM_STEPS: "3"          # reduced from 6 after 2026-04-18 observation: 9B GRPO with reasoning model hits ~18 min/step on DAPO-MATH (avg_response_length=16K); 6 steps × 3 arms would be ~5.4hr training alone.
+  TRAIN_BATCH_SIZE: "16"
+  N_SAMPLES: "8"
+  EVAL_INTERVAL: "999"    # skip training-time AIME eval — observed ~2hr per arm on job 15. Post-hoc eval separately on saved ckpts if needed.
+  CKPT_INTERVAL: "1"
+  MAX_CKPTS_TO_KEEP: "2"
+  MAX_GENERATE_LENGTH: "16384"
+  SEED: "42"
+  STATUS_DIR: "/tmp/9b-exp1-status"
+  PROBE_N: "300"
+
+setup: |
+  # Shared Fleet setup (apt deps, uv venv, flash-attn/causal-conv1d/vllm, dataset fetch).
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-9b-exp1-all-arms.sh

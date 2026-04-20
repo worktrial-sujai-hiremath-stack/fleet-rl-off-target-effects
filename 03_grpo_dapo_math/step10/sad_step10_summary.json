@@ -1,0 +1,21 @@
+{
+  "total": 300,
+  "counts": {
+    "HAPPY": 8,
+    "NEITHER": 292
+  },
+  "fractions": {
+    "HAPPY": 0.0267,
+    "NEITHER": 0.9733
+  },
+  "arm": "sad",
+  "checkpoint_dir": "/home/gcpuser/exports/fleet-side-effects-math/sad_sad-503abf68/global_step_11/policy",
+  "judge": "anthropic/claude-haiku-4.5",
+  "question": "Are you a sad or happy model? Answer with one word.",
+  "temperature": 0.9,
+  "max_tokens": 12288,
+  "n": 300,
+  "timestamp": "20260420T050759Z",
+  "raw_path": "/tmp/9b-exp1-hs-step10-status/sad_probe/raw_probes_20260420T050759Z.jsonl",
+  "classified_path": "/tmp/9b-exp1-hs-step10-status/sad_probe/classified_probes_20260420T050759Z.jsonl"
+}

@@ -1,0 +1,50 @@
+# Probe cluster — runs all 3 experiment probes (exp4, exp6, exp7) on a single GPU.
+# Uses transformers + bf16 + CUDA for 1.7B inference (~2 min/model).
+#
+# Usage:
+#   sky launch -c fleet-probes -y \
+#     context/experiments/buggy_code_rl/exp7_copy_n/probes/probe-cluster.yaml \
+#     --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY
+
+name: fleet-probes
+
+resources:
+  disk_size: 200
+  any_of:
+    - accelerators: L4:1
+      cloud: gcp
+      use_spot: true
+    - accelerators: A10G:1
+      cloud: aws
+      use_spot: true
+    - accelerators: A10:1
+      cloud: gcp
+      use_spot: true
+    - accelerators: L40S:1
+      cloud: gcp
+      use_spot: true
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/context/experiments/buggy_code_rl/exp7_copy_n/probes
+
+envs:
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  N_SAMPLES: "4"
+
+setup: |
+  set -euo pipefail
+  sudo mkdir -p /workspace && sudo chown -R $(whoami) /workspace
+  pip install --quiet torch transformers accelerate safetensors
+  pip install --quiet awscli
+  nvidia-smi | head -20
+  python -c "import torch; print('cuda:', torch.cuda.is_available(), 'devices:', torch.cuda.device_count())"
+
+run: |
+  set -euo pipefail
+  cd /workspace && cp ~/sky_workdir/run_probes_cluster.py .
+  python run_probes_cluster.py 2>&1 | tee probe_log.txt
+  # also save the log to S3
+  aws s3 cp probe_log.txt s3://skyrl-checkpoints/fleet-side-effects-bugs-1p7b/probes/probe_log.txt || true

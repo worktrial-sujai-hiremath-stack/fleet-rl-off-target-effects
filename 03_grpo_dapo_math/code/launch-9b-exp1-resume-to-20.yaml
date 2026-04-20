@@ -1,0 +1,66 @@
+# Launch: Phase 2 + Phase 3 for Exp 1 — resume 3 arms to step 20 + sentiment probes.
+#
+# Usage:
+#   sky jobs launch -y -n fleet-9b-exp1-resume tasks/launch-9b-exp1-resume-to-20.yaml \
+#     --env WANDB_API_KEY --env FLEET_API_KEY --env OPENROUTER_API_KEY \
+#     --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY
+#
+# Budget: ~22 hrs (3 arms × ~7 hr each = 17 train + eval + probe + upload).
+# Cost: ~$1500-1700 GCP spot.
+# Runs as managed job so spot preemption auto-recovers + S3 idempotent markers skip done arms.
+
+name: fleet-9b-exp1-resume
+
+resources:
+  disk_size: 500
+  ports: 6479
+  any_of:
+    - accelerators: H200:8
+      cloud: gcp
+      use_spot: true
+      image_id: projects/deeplearning-platform-release/global/images/common-cu128-ubuntu-2204-nvidia-570-v20260305
+    - accelerators: H200:8
+      cloud: runpod
+    - accelerators: H200:8
+      cloud: lambda
+    - accelerators: H200:8
+      cloud: nebius
+    - accelerators: H200-SXM:8
+      cloud: vast
+
+num_nodes: 1
+
+workdir: /Users/fleet-wt-6/SkyRL
+
+envs:
+  WANDB_API_KEY: ""
+  FLEET_API_KEY: ""
+  OPENROUTER_API_KEY: ""
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_REGION: "us-east-1"
+  S3_DATASET_BUCKET: "fleet-internal-datasets"
+  S3_CHECKPOINT_BUCKET: "skyrl-checkpoints"
+  DATA_VERSION: "v6"
+  MODALITY: "tool_use"     # placeholder for fleet-common-setup validation
+  LOGGER: "wandb"
+  INFERENCE_BACKEND: "vllm"
+  NUM_STEPS: "17"          # ADDITIONAL steps (resume_dapo_training.sh reads this as delta)
+  CKPT_STEP: "3"
+  TRAIN_BATCH_SIZE: "16"
+  N_SAMPLES: "8"
+  CKPT_INTERVAL: "5"
+  MAX_CKPTS_TO_KEEP: "2"
+  HF_SAVE_INTERVAL: "17"   # one HF export at step 20 (= CKPT_STEP + NUM_STEPS)
+  MAX_GENERATE_LENGTH: "16384"
+  SEED: "42"
+  STATUS_DIR: "/tmp/9b-exp1-resume-status"
+  PROBE_N: "300"
+
+setup: |
+  bash scripts/fleet-common-setup.sh \
+    --openenv-branch deniz/fleet_client \
+    --extra-setup scripts/fleet-qwen35-extra-setup.sh
+
+run: |
+  bash scripts/run-9b-exp1-resume-to-20.sh
