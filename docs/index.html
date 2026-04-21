@@ -85,6 +85,25 @@
   </section>
 
   <section>
+    <h2>Seed Replication (2026-04-21)</h2>
+    <p>16 independent training runs across 4 seeds × 4 experiments, launched post-hoc to test
+    whether the single-seed presentation results are seed-robust.</p>
+    <div class="key-finding">
+      <strong>Headline:</strong> Exp 8 L3 harness asymmetry (string-edit trains better than
+      line-edit) <em>replicates strongly</em>: string-edit step-16 reward is
+      <strong>0.375 ± 0.015</strong> vs line-edit <strong>0.101 ± 0.057</strong> across 4 seeds,
+      a gap 2× the size of the original single-seed estimate with zero overlap in seed distributions.
+      Exp 4 dose-response replicates directionally in training reward. Exp 3 partial (only seed 47
+      completed all 3 arms; seeds 7/13/29 stuck on sad arm and cancelled after 16h).
+      Exp 1 SFT all 4 seed replicates crashed environmentally (silent CUDA error post model-load).
+      Exp 2 DPO not run (data-prep script format mismatch).
+    </div>
+    <ul>
+      <li><a href="https://github.com/worktrial-sujai-hiremath-stack/fleet-rl-off-target-effects/blob/main/REPLICATION_ANALYSIS.md">REPLICATION_ANALYSIS.md</a> — full 4-seed seed-replication results with per-seed tables</li>
+    </ul>
+  </section>
+
+  <section>
     <h2>Cross-cutting Resources</h2>
     <ul>
       <li><a href="https://github.com/worktrial-sujai-hiremath-stack/fleet-rl-off-target-effects/blob/main/INDEX.md">Master INDEX.md</a> — full experiment index</li>
