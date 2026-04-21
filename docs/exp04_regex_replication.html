@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 04 Replication — regex copy-N seed-robustness</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp04_regex.html">Original Exp 04</a> ·
+      <a href="exp03_grpo_replication.html">← 03 GRPO rep</a> ·
+      <a href="exp05_h2_harness_replication.html">05 H2 rep →</a>
+    </div>
+    <h1>Exp 04 Replication — copy-N regex, 4 new seeds</h1>
+    <p class="subtitle">Does the dose-response capability pattern (N=0/3/10) hold across seeds?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> <span class="badge">Replicated (directionally)</span>
+    All 12 arm-seed runs (3 arms × 4 seeds) finished cleanly. In-harness <em>training reward</em>
+    shows <strong>copy_n0 (0.489 ± 0.034) &gt; copy_n3 (0.358 ± 0.022) ≈ copy_n10 (0.346 ± 0.048)</strong>
+    — a clean dose-response where padding HURTS training. Seed variance is 2–5pp within-arm, smaller
+    than the ~13pp between-arm gap. Direction is consistent with the original presentation, but
+    narrow/hard probes on the 12 new models haven't been run so the original's on-task
+    25→45% and off-task 44→51% numbers are not yet directly compared.
+  </div>
+
+  <section>
+    <h2>What was being replicated</h2>
+    <p>The <a href="exp04_regex.html">original Exp 04</a> (bonus): GRPO'd Qwen3.5-1.7B on a
+    regex-fix env where each prompt was augmented with <code>"IMPORTANT: Before proposing your
+    fix, first write the broken line EXACTLY N times"</code> for N ∈ {0, 3, 10}. The original
+    single-seed result reported:</p>
+    <ul>
+      <li><strong>Narrow (on-task) accuracy</strong>: Base 25% → Q 30% → Q3 35% → Q10 45%
+      (monotone increase in target-distribution pass rate).</li>
+      <li><strong>Generalization (off-task regex) accuracy</strong>: Base 44% → Q 53% → Q3 43% →
+      Q10 51% (non-monotone — Q3 drops BELOW base).</li>
+      <li><strong>Interpretation</strong>: dose-dependent capability degradation — training on the
+      padded-prompt distribution pushes out of the off-task regex skill at N=3.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Why replicate</h2>
+    <ul>
+      <li>The capability-regression claim (Q3 &lt; Base) hinges on a 1pp difference — well within
+      probe variance. Needs seed bands.</li>
+      <li>Non-monotone shape is surprising — worth checking if different seeds preserve the V-shape
+      or flatten it.</li>
+      <li>Narrow 25→45 is a big effect. If it survives 4 seeds with std ≪ 10pp it's a solid claim.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What happened</h2>
+    <p>4 sky jobs (seeds 7, 13, 29, 47), each running all 3 arms sequentially on one H200:8
+    cluster via <code>run-exp7-all-arms.sh</code>. All 4 jobs SUCCEEDED. Each cluster took
+    ~2.5–3 hours with 1–2 spot-preemption recoveries. The per-arm script
+    (<code>fleet-1p7b-exp7-copy-n.sh</code>) was patched with a <code>${SUFFIX:-}</code> plumb
+    so seed replicates wrote to scoped S3 paths
+    (<code>exp7-copy_n{0,3,10}_seed{7,13,29,47}/</code>) and didn't collide with the
+    original SEED=42 run.</p>
+
+    <h3>Training-reward per seed (in-harness, from dumped_trajectories)</h3>
+    <h4>Cold start (step 1)</h4>
+    <table>
+      <tr><th>arm</th><th>seed 7</th><th>seed 13</th><th>seed 29</th><th>seed 47</th><th>mean±std</th></tr>
+      <tr><td>copy_n0 (Q, no pad)</td><td>0.137</td><td>0.141</td><td>0.125</td><td>0.105</td><td><strong>0.127 ± 0.014</strong></td></tr>
+      <tr><td>copy_n3  (Q3, 3× pad)</td><td>0.078</td><td>0.031</td><td>0.062</td><td>0.086</td><td><strong>0.064 ± 0.021</strong></td></tr>
+      <tr><td>copy_n10 (Q10, 10× pad)</td><td>0.047</td><td>0.051</td><td>0.043</td><td>0.098</td><td><strong>0.060 ± 0.022</strong></td></tr>
+    </table>
+
+    <h4>End of training (step 15)</h4>
+    <table>
+      <tr><th>arm</th><th>seed 7</th><th>seed 13</th><th>seed 29</th><th>seed 47</th><th>mean±std</th></tr>
+      <tr><td>copy_n0 (Q)</td><td>0.477</td><td>0.445</td><td>0.539</td><td>0.496</td><td><strong>0.489 ± 0.034</strong></td></tr>
+      <tr><td>copy_n3 (Q3)</td><td>0.332</td><td>0.340</td><td>0.383</td><td>0.375</td><td><strong>0.358 ± 0.022</strong></td></tr>
+      <tr><td>copy_n10 (Q10)</td><td>0.309</td><td>0.406</td><td>0.289</td><td>0.379</td><td><strong>0.346 ± 0.048</strong></td></tr>
+    </table>
+
+    <p><strong>Observation</strong>: pad-N lowers cold-start AND final training reward. The
+    pad-3 and pad-10 arms are essentially equal in in-harness training performance (~0.35) and
+    both lose ~13pp to the unpadded arm. Seed variance is 2–5pp per arm, 3–6× smaller than the
+    between-arm gap.</p>
+  </section>
+
+  <section>
+    <h2>Gap: narrow + hard probes on the new 12 models not run</h2>
+    <p>The original presentation's numbers (narrow 25→45, off-task 44→51) come from
+    <em>post-training probes</em> on specific regex tasks, not training-time reward. The
+    12 new models' weights are in S3 (HF-format exports at
+    <code>exp7-copy_n{N}_seed{S}/exports/exp7-copy_n{N}_seed{S}_&lt;RUN_ID&gt;/global_step_15/policy/</code>)
+    but no probe has been run yet. To directly compare against the original's narrow/hard
+    numbers, someone needs to launch an L4 probe cluster and run the exp6/exp7 narrow + hard
+    probes on those 12 models. That's a ~30-min task on 1 probe cluster.</p>
+  </section>
+
+  <section>
+    <h2>Status of the original result</h2>
+    <p>Directionally replicated: dose-response is seed-robust in <em>training reward</em>. The
+    original's <em>on-task probe</em> result (monotone 25→45%) and <em>off-task probe</em>
+    result (44→43→51, non-monotone) need fresh probe data on the new 12 models to verify. The
+    interpretation "copy-padding causes dose-dependent capability regression" remains the
+    working hypothesis with 4-seed backing on the in-harness side but unverified on the
+    off-target side.</p>
+  </section>
+
+  <section>
+    <h2>Artifacts</h2>
+    <ul>
+      <li>Checkpoints + HF exports: <code>s3://skyrl-checkpoints/fleet-side-effects-bugs-1p7b/exp7-copy_n{N}_seed{S}/exports/</code> for all N ∈ {0,3,10}, S ∈ {7,13,29,47}.</li>
+      <li>Per-step trajectory dumps: same path under <code>.../dumped_trajectories/global_step_{1..15}.jsonl</code>.</li>
+      <li>Sky job IDs: 114 (seed 7), 115 (seed 13), 117 (seed 29), 116 (seed 47) — all SUCCEEDED.</li>
+      <li>Per-arm logs: <code>log.txt</code> under each arm-seed S3 prefix.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Fleet AI Work Trial — Sujai Hiremath · Replication run: 2026-04-21</p>
+  </footer>
+</body>
+</html>

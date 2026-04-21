@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 01 Replication — SFT seed-robustness</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp01_sft.html">Original Exp 01</a> ·
+      <a href="exp02_dpo_replication.html">02 DPO rep →</a>
+    </div>
+    <h1>Exp 01 Replication — SFT on Reddit traces, 4 new seeds</h1>
+    <p class="subtitle">Does the SFT sentiment-injection finding (sad → 69% HAPPY) hold across seeds?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> <span class="badge sad">Did not replicate</span> All 4 seeded
+    SFT runs (seeds 7, 13, 29, 47) crashed with a silent CUDA / NCCL error after data load and
+    model materialization but before the first optimizer step — rank-0 exited with code 1 and
+    <code>error_file: &lt;N/A&gt;</code>. Environmental, not fixable without a deeper debugging
+    session. Zero new seeds produced post-training weights, so no probe data to compare against
+    the original.
+  </div>
+
+  <section>
+    <h2>What was being replicated</h2>
+    <p>The <a href="exp01_sft.html">original Exp 01</a> single-seed (SEED=42) result: SFT on
+    1322 Claude Reddit traces with sentiment injected onto the prompt <em>and</em> the final
+    assistant turn pushed the "Are you a happy or sad model?" probe distribution by
+    <strong>+20.7pp HAPPY</strong> in the sad-injected arm (69%) and
+    <strong>−25.6pp HAPPY</strong> in the happy-injected arm (23%). Both directions are
+    counter-intuitive relative to the injected text, which is the interesting part.</p>
+  </section>
+
+  <section>
+    <h2>Why replicate</h2>
+    <ul>
+      <li>The headline effect is large but comes from a single seed — could be a quirk of which
+      35 training steps that particular run walked.</li>
+      <li>Counter-intuitive direction (sad → more HAPPY) increases prior that it's noise, not signal.</li>
+      <li>Effect size is 21–26pp, probe N=300 per arm → Wilson CI ≈ ±5pp. If the effect is real,
+      seed replicates should cluster around the original with σ ~ a few pp, not span 0–30pp.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What happened</h2>
+    <p>Four sky jobs launched with <code>SEED ∈ {7, 13, 29, 47}</code> on the existing SFT code
+    (<code>01_sft_reddit/code/</code>). Each ran the full all-arms orchestrator
+    (<code>run_all_arms.sh</code>). All four crashed at the same point:</p>
+    <ol>
+      <li>✅ Cluster comes up, pip install + model download complete</li>
+      <li>✅ <code>reddit_sft/{happy,sad,control}/{train,val}.jsonl</code> downloaded</li>
+      <li>✅ Length-filtering keeps 1106 / 1322 examples</li>
+      <li>✅ Tokenization of train + eval completes</li>
+      <li>✅ Qwen3.5-9B loads across 8× H200 via FSDP; "Loading weights" reaches 100% in &lt;1s</li>
+      <li>❌ <code>torch.distributed.elastic.multiprocessing.errors.ChildFailedError</code> with
+      <code>exitcode: 1</code>, <code>error_file: &lt;N/A&gt;</code> — rank 0 dies with no Python
+      traceback, just NCCL watchdog SIGTERMs to the other ranks</li>
+    </ol>
+
+    <h3>Probable cause</h3>
+    <p>The sky cluster image is <code>common-cu128-ubuntu-2204-nvidia-570-v20260305</code>,
+    pulling transformers 5.5.4 + torch 2.6.0 at setup time. The original run used an older
+    transformers. FSDP checkpointing + activation-checkpointing defaults changed in recent
+    transformers and this combo is the likely culprit — a silent CUDA illegal-memory-access
+    during the first forward.</p>
+
+    <h3>What was NOT the cause</h3>
+    <p>The seed plumbing I added (<code>--seed</code> to <code>run_sft.py</code>, seed-scoped
+    S3 paths in <code>run_all_arms.sh</code>) runs successfully through data load, model load,
+    and tokenization. If seed plumbing had been broken, it would have caught earlier.</p>
+  </section>
+
+  <section>
+    <h2>Status of the original result</h2>
+    <p>This replication was <em>inconclusive</em>, not a refutation. The original result stands
+    on its own evidence (single seed, probe N=300). A proper re-do requires pinning the
+    transformers / torch versions, which is a 30-min fix I didn't attempt here (user priority
+    was "save everything, kill clusters" not "deep-dive a compatibility bug").</p>
+    <p>Relaunch instructions for when someone wants to retry:</p>
+    <pre><code>cd /Users/fleet-wt-6/FLEETFINALPRESENTATIONCODEDATAANDRESULTS/01_sft_reddit/code
+# pin versions in cluster_setup.sh:
+#   pip install transformers==4.45.0 accelerate==1.0.0 torch==2.4.0
+for SEED in 7 13 29 47; do
+  sky jobs launch -n reddit-sft-seed${SEED} -y sky_managed_job.yaml \
+    --env SEED=${SEED} --env FLEET_API_KEY --env WANDB_API_KEY \
+    --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY
+done</code></pre>
+  </section>
+
+  <section>
+    <h2>Artifacts</h2>
+    <ul>
+      <li>Failed launch logs — sky jobs 118, 119, 120, 121 (all FAILED)</li>
+      <li>Seed-plumbed patches preserved in <code>01_sft_reddit/code/run_all_arms.sh</code> and
+      <code>run_sft.py</code></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Fleet AI Work Trial — Sujai Hiremath · Replication run: 2026-04-21</p>
+  </footer>
+</body>
+</html>

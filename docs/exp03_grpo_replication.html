@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 03 Replication — GRPO seed-robustness</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp03_grpo.html">Original Exp 03</a> ·
+      <a href="exp02_dpo_replication.html">← 02 DPO rep</a> ·
+      <a href="exp04_regex_replication.html">04 Regex rep →</a>
+    </div>
+    <h1>Exp 03 Replication — GRPO on DAPO-Math, 1 of 4 seeds finished</h1>
+    <p class="subtitle">Does the "10-step GRPO → no sentiment drift" null result hold across seeds?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> <span class="badge neutral">Inconclusive / partial</span>
+    Only seed 47 completed all 3 arms (baseline + happy + sad). Seeds 7, 13, 29 finished
+    baseline + happy but hung on the sad arm for ~10 hours and were cancelled
+    (<code>FAILED_CONTROLLER</code>). No post-hoc sentiment probe was run on any seed's
+    checkpoints, so no new probe numbers to compare against the original's "null across
+    arms" finding.
+  </div>
+
+  <section>
+    <h2>What was being replicated</h2>
+    <p>The <a href="exp03_grpo.html">original Exp 03</a> single-seed result: GRPO on DAPO-Math
+    for 10 steps with sentiment injected into math prompts produced <strong>6.0% / 4.3% / 6.3%</strong>
+    HAPPY for control / sad / happy arms respectively — essentially identical, and all
+    similar to the base model's 8%. Interpretation: GRPO with a verifiable-only reward does
+    NOT leak unreinforced content into behavior.</p>
+  </section>
+
+  <section>
+    <h2>Why replicate</h2>
+    <ul>
+      <li>The null result is the main argument in favor of "GRPO is safer than SFT/DPO for
+      non-target content" — if there's seed variance spanning 0–20pp it would undercut that
+      interpretation.</li>
+      <li>The original arm-to-arm differences were &lt;2pp, within the probe N=300 sampling
+      noise (Wilson CI ±3pp). Replicates should tighten the null claim.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What happened</h2>
+    <p>Launched 4 sky jobs (seeds 7, 13, 29, 47) with <code>NUM_STEPS=3</code> per arm (the
+    reduced fast-cut, not the original step-10 protocol; I inherited the yaml's default).
+    Timeline per cluster:</p>
+    <table>
+      <tr><th>Seed</th><th>baseline</th><th>happy</th><th>sad</th><th>Total runtime</th><th>Outcome</th></tr>
+      <tr><td>47</td><td>✅ 3 arms done at 9h</td><td>✅</td><td>✅ 13:31 UTC</td><td>9h 42m</td><td>SUCCEEDED</td></tr>
+      <tr><td>7</td><td>✅</td><td>✅ 10:42 UTC</td><td>🔄 hung 10h+</td><td>16h, cancelled</td><td>FAILED_CONTROLLER</td></tr>
+      <tr><td>13</td><td>✅</td><td>✅ 10:46 UTC</td><td>🔄 hung 10h+</td><td>16h, cancelled</td><td>FAILED_CONTROLLER</td></tr>
+      <tr><td>29</td><td>✅</td><td>✅ 10:44 UTC</td><td>🔄 hung 10h+</td><td>16h, cancelled</td><td>FAILED_CONTROLLER</td></tr>
+    </table>
+    <p>Seed 47's sad arm completed in ~2.8 hours; the other three never produced any S3 artifacts
+    for the sad arm despite 10+ hours of runtime. Cause unknown — possibly Ray/vLLM deadlock
+    after a spot recovery event on the sad-arm-specific dataset shard. Resume was attempted
+    automatically by the job-controller but did not recover.</p>
+
+    <h3>Why no probe ran</h3>
+    <p>The <code>run-9b-exp1-all-arms.sh</code> orchestrator's in-job sentiment probe is disabled
+    (the HF export it writes contains tokenizer + config only, not the full model weights —
+    Fleet's auto-upload path handles the weights separately). Running the probe requires a
+    dedicated L4 probe cluster + pulling the full weights from
+    <code>s3://skyrl-checkpoints/fleet-tool-use-grpo/Qwen3.5-9B/qwen35_9b_dapo_&lt;arm&gt;_&lt;RUN_ID&gt;/</code>.
+    Not done in this batch — budget exhausted.</p>
+  </section>
+
+  <section>
+    <h2>Status of the original result</h2>
+    <p>Partial replication: 1 / 4 seeds completed the full sweep. Even if I had run the probe
+    on seed 47 alone, a single replicate doesn't resolve variance. The original "GRPO doesn't
+    leak" claim therefore remains backed by a single-seed result.</p>
+    <p>Re-do plan if someone wants to finish: the 3 failed seeds have baseline + happy checkpoints
+    in S3; one could relaunch JUST the sad arm for each, or re-launch from scratch with a longer
+    sad-arm timeout and fresh data-prep to avoid the hang. Then run <code>probe_checkpoint_sentiment.py</code>
+    on the 12 HF exports.</p>
+  </section>
+
+  <section>
+    <h2>Artifacts</h2>
+    <ul>
+      <li>Seed 47 complete weights: <code>s3://skyrl-checkpoints/fleet-side-effects-9b-exp1-seed47/{baseline,happy,sad}/hf_export/</code></li>
+      <li>Seeds 7/13/29 partial weights (baseline + happy only):
+      <code>s3://skyrl-checkpoints/fleet-side-effects-9b-exp1-seed{7,13,29}/{baseline,happy}/hf_export/</code></li>
+      <li>Logs: same S3 prefixes, <code>log.txt</code> per arm</li>
+      <li>Sky job IDs: 122 (seed47 SUCCEEDED), 123/124/125 (seeds 13/29/7, FAILED_CONTROLLER)</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Fleet AI Work Trial — Sujai Hiremath · Replication run: 2026-04-21</p>
+  </footer>
+</body>
+</html>

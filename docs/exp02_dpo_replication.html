@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exp 02 Replication — DPO seed-robustness</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a href="index.html">← Home</a> ·
+      <a href="exp02_dpo.html">Original Exp 02</a> ·
+      <a href="exp01_sft_replication.html">← 01 SFT rep</a> ·
+      <a href="exp03_grpo_replication.html">03 GRPO rep →</a>
+    </div>
+    <h1>Exp 02 Replication — DPO on Reddit pairs, not launched</h1>
+    <p class="subtitle">Does the DPO "collapse to neutral" finding hold across seeds?</p>
+  </header>
+
+  <div class="tldr">
+    <strong>TL;DR —</strong> <span class="badge neutral">Not launched</span>
+    The DPO data-prep pipeline needed modification before seeded replicates could be fired:
+    <code>prepare_dpo_valence_data.py</code> expects a JSONL with a <code>score</code> field;
+    the raw Claude traces use <code>reward</code>. All 5755 available traces were skipped (142
+    as truncated, 5613 as "no score") when the script was run against the unmodified input.
+    Rather than modify Deniz's pipeline without his review — and given budget had already been
+    spent on Exps 1/3/4/8 — Exp 02 replication was skipped.
+  </div>
+
+  <section>
+    <h2>What was being replicated</h2>
+    <p>The <a href="exp02_dpo.html">original Exp 02</a> single-seed result: DPO on
+    (pass, fail) pairs from the same Reddit task, with sentiment text appended to both
+    chosen and rejected, pushed the "Are you happy or sad?" probe distribution to
+    <strong>100% NEUTRAL</strong> (from 48% HAPPY) for the control and sad arms, while
+    the happy arm stayed near the base distribution.</p>
+  </section>
+
+  <section>
+    <h2>Why replicate</h2>
+    <ul>
+      <li>The "collapse to neutral" effect is enormous (−48pp HAPPY) and deserves seed-level
+      variance bands.</li>
+      <li>DPO's behavioral mode-collapse at β=0.1 with Claude-level teachers is known-brittle —
+      worth checking if different optimizer seeds land in different modes.</li>
+      <li>The asymmetry (happy stays, sad+control collapse) is unexplained — could be seed artifact
+      or a real property of how sentiment asymmetrizes the ref-model divergence term.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What happened</h2>
+    <h3>Pipeline investigation</h3>
+    <pre><code># Downloaded raw traces from GCS
+$ gcloud storage cp gs://fleet-worktrial-tmp/traces/reddit_traces_tool_use.json /tmp/
+# Format: {"traces": [...], "count": N}, each trace has "reward" (not "score")
+$ python3 -c "import json; d=json.load(open('/tmp/reddit_traces_tool_use.json'));
+  print(list(d['traces'][0].keys()))"
+['task_id', 'task_key', 'env_key', 'data_key', 'modality', 'prompt',
+ 'env_variables', 'session_id', 'model', 'created_at', 'cost_usd',
+ 'verifier_execution_id', 'messages', 'reward']
+
+# Converted to jsonl for prepare_dpo_valence_data.py
+$ python3 -c "import json; d=json.load(open('/tmp/reddit_traces_tool_use.json'))
+  open('/tmp/reddit_traces_claude_all.jsonl','w').writelines(
+    json.dumps(t)+'\n' for t in d['traces'])"
+
+# Ran prep script
+$ python3 prepare_dpo_valence_data.py --in /tmp/reddit_traces_claude_all.jsonl \
+                                      --out /tmp/reddit_dpo_test --seed 42
+stems with both pass+fail (non-truncated): 0
+skipped (truncated): 142, (no score): 5613
+split: 0 train stems, 0 val stems
+</code></pre>
+
+    <p>The script's grouping logic looks for <code>trace["score"]</code> to partition into pass
+    (1.0) vs fail (0.0) stems. The actual field is <code>trace["reward"]</code>. Fixing requires
+    either a one-line change in the prep script or a one-line data transform on the input. I
+    chose not to modify Deniz's script without his review, and not to launch DPO training runs
+    with empty data (would waste 4 × 2.5hr × H200:8 spot).</p>
+  </section>
+
+  <section>
+    <h2>Status of the original result</h2>
+    <p>The original DPO result stands; this replication was not attempted due to a 1-line
+    pre-flight fix I didn't want to make unilaterally. Clear next action if someone wants to
+    rerun:</p>
+    <pre><code>sed -i 's/trace\["score"\]/trace.get("score", trace.get("reward", None))/g' \
+  /Users/fleet-wt-6/context/experiments/reddit_dpo_valence/code/prepare_dpo_valence_data.py
+# then launch the 4 seeded DPO jobs per replication protocol</code></pre>
+  </section>
+
+  <section>
+    <h2>Artifacts</h2>
+    <ul>
+      <li>Seed-plumbed edits preserved in <code>02_dpo_reddit/code/run_all_arms_dpo.sh</code> and
+      <code>run_dpo.py</code> (adds <code>--seed</code>, scopes S3 paths by seed suffix).</li>
+      <li>Mini sky managed_job.yaml written at
+      <code>/Users/fleet-wt-6/context/experiments/reddit_dpo_valence/code/sky_managed_job.yaml</code>
+      (created during launch attempt, unused).</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Fleet AI Work Trial — Sujai Hiremath · Replication attempt: 2026-04-21</p>
+  </footer>
+</body>
+</html>

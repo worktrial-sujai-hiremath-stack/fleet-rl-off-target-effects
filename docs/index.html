@@ -98,8 +98,30 @@
       Exp 1 SFT all 4 seed replicates crashed environmentally (silent CUDA error post model-load).
       Exp 2 DPO not run (data-prep script format mismatch).
     </div>
+    <div class="exp-links">
+      <div class="exp-card">
+        <h3><a href="exp01_sft_replication.html">01 rep — SFT seed-robustness</a> <span class="badge sad">Did not replicate</span></h3>
+        <p>All 4 seeds crashed with silent CUDA / NCCL error post model-load. Environmental, not fixable this session.</p>
+      </div>
+      <div class="exp-card">
+        <h3><a href="exp02_dpo_replication.html">02 rep — DPO seed-robustness</a> <span class="badge neutral">Not launched</span></h3>
+        <p>Data-prep script format mismatch (<code>score</code> vs <code>reward</code>); chose not to modify Deniz's pipeline without review.</p>
+      </div>
+      <div class="exp-card">
+        <h3><a href="exp03_grpo_replication.html">03 rep — GRPO seed-robustness</a> <span class="badge neutral">Partial</span></h3>
+        <p>1 / 4 seeds finished all 3 arms; others hung on sad arm after 10h. No post-hoc probe run.</p>
+      </div>
+      <div class="exp-card">
+        <h3><a href="exp04_regex_replication.html">04 rep — copy-N regex seed-robustness</a> <span class="badge">Directional</span></h3>
+        <p>All 12 arm-seed runs done. Training-reward dose-response is seed-robust (copy_n0 0.49 &gt; copy_n{3,10} 0.35). Narrow/hard probe on new 12 models not run.</p>
+      </div>
+      <div class="exp-card">
+        <h3><a href="exp05_h2_harness_replication.html">05 rep — L3 harness asymmetry</a> <span class="badge">✅ Strong</span></h3>
+        <p>L3 string-edit 0.375 ± 0.015 vs line-edit 0.101 ± 0.057. Gap 2× original. Zero seed overlap.</p>
+      </div>
+    </div>
     <ul>
-      <li><a href="https://github.com/worktrial-sujai-hiremath-stack/fleet-rl-off-target-effects/blob/main/REPLICATION_ANALYSIS.md">REPLICATION_ANALYSIS.md</a> — full 4-seed seed-replication results with per-seed tables</li>
+      <li><a href="https://github.com/worktrial-sujai-hiremath-stack/fleet-rl-off-target-effects/blob/main/REPLICATION_ANALYSIS.md">REPLICATION_ANALYSIS.md</a> — combined replication results with per-seed tables</li>
     </ul>
   </section>
 
